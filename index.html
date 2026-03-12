@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>機台更新策略儀表板</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e17;
+  --surface: #111827;
+  --surface2: #1a2236;
+  --border: #1f2f4a;
+  --accent: #00d4ff;
+  --accent2: #ff6b35;
+  --accent3: #00ff9d;
+  --warn: #ffb300;
+  --danger: #ff3d57;
+  --text: #e2e8f0;
+  --text2: #7a8fa6;
+  --text3: #4a5568;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Noto Sans TC', sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.025) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+.app{position:relative;z-index:1;}
+
+/* HEADER */
+header{border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:60px;background:rgba(10,14,23,0.95);backdrop-filter:blur(12px);position:sticky;top:0;z-index:200;}
+.logo{display:flex;align-items:center;gap:12px;}
+.logo-icon{width:30px;height:30px;border:1.5px solid var(--accent);display:grid;place-items:center;font-family:var(--mono);font-size:10px;color:var(--accent);}
+.logo-text{font-size:13px;font-weight:500;letter-spacing:2px;text-transform:uppercase;}
+.logo-sub{font-family:var(--mono);font-size:9px;color:var(--text2);letter-spacing:1px;}
+.live-badge{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;color:var(--accent3);letter-spacing:1px;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent3);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.header-actions{display:flex;gap:10px;align-items:center;}
+.btn{padding:7px 16px;background:transparent;border:1px solid var(--border);color:var(--text2);font-family:var(--mono);font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.btn:hover{border-color:var(--accent);color:var(--accent);}
+.btn.primary{border-color:var(--accent);color:var(--accent);}
+.btn.primary:hover{background:var(--accent);color:var(--bg);}
+
+/* NAV TABS */
+.nav-tabs{display:flex;border-bottom:1px solid var(--border);background:rgba(10,14,23,0.8);padding:0 28px;gap:0;position:sticky;top:60px;z-index:100;backdrop-filter:blur(8px);}
+.tab{padding:12px 20px;font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;text-transform:uppercase;user-select:none;}
+.tab:hover{color:var(--text2);}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* MAIN */
+main{padding:24px 28px;}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);padding:16px 20px;position:relative;overflow:hidden;animation:fadeUp .4s ease both;}
+.kpi-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi-card.c1::after{background:var(--accent);}
+.kpi-card.c2::after{background:var(--accent2);}
+.kpi-card.c3::after{background:var(--accent3);}
+.kpi-card.c4::after{background:var(--warn);}
+.kpi-card.c5::after{background:var(--danger);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.kpi-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--text2);text-transform:uppercase;margin-bottom:6px;}
+.kpi-value{font-family:var(--mono);font-size:28px;font-weight:600;line-height:1;margin-bottom:2px;}
+.kpi-card.c1 .kpi-value{color:var(--accent);}
+.kpi-card.c2 .kpi-value{color:var(--accent2);}
+.kpi-card.c3 .kpi-value{color:var(--accent3);}
+.kpi-card.c4 .kpi-value{color:var(--warn);}
+.kpi-card.c5 .kpi-value{color:var(--danger);}
+.kpi-sub{font-size:10px;color:var(--text3);}
+
+/* CONTROLS */
+.controls{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);padding:7px 14px;flex:1;min-width:180px;}
+.search-box input{background:transparent;border:none;outline:none;color:var(--text);font-family:var(--sans);font-size:12px;width:100%;}
+.search-box input::placeholder{color:var(--text3);}
+select{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:7px 32px 7px 12px;font-family:var(--sans);font-size:12px;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%237a8fa6' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
+
+/* SECTION */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.section-title{font-family:var(--mono);font-size:10px;letter-spacing:3px;color:var(--text2);text-transform:uppercase;}
+.result-count{font-family:var(--mono);font-size:10px;color:var(--text3);}
+
+/* CASINO TABLE */
+.table-wrap{border:1px solid var(--border);overflow-x:auto;animation:fadeUp .5s ease .2s both;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead{background:var(--surface2);border-bottom:1px solid var(--border);}
+th{padding:10px 14px;text-align:left;font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--text2);text-transform:uppercase;white-space:nowrap;cursor:pointer;user-select:none;transition:color .2s;}
+th:hover,th.sorted{color:var(--accent);}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer;}
+tbody tr:hover{background:var(--surface2);}
+tbody tr:last-child{border-bottom:none;}
+td{padding:12px 14px;vertical-align:middle;}
+.casino-name-cell .name{font-weight:500;font-size:13px;}
+.casino-name-cell .region{font-size:10px;color:var(--text3);margin-top:2px;}
+.machine-num{font-family:var(--mono);font-size:20px;font-weight:600;color:var(--accent);}
+.games-tags{display:flex;flex-wrap:wrap;gap:3px;}
+.tag{padding:2px 7px;font-size:10px;font-family:var(--mono);border:1px solid;}
+.tag.slots{border-color:#4a6fa5;color:#7fa8e8;background:rgba(74,111,165,.08);}
+.tag.table{border-color:#5a8a5a;color:#7fc97f;background:rgba(90,138,90,.08);}
+.tag.fish{border-color:#8a5a5a;color:#e08080;background:rgba(138,90,90,.08);}
+.tag.other{border-color:#7a6a3a;color:#d4b56a;background:rgba(122,106,58,.08);}
+.rev-bar-wrap{display:flex;align-items:center;gap:8px;}
+.rev-bar{width:70px;height:6px;background:var(--border);position:relative;}
+.rev-fill{position:absolute;top:0;left:0;height:100%;transition:width .5s ease;}
+.rev-label{font-family:var(--mono);font-size:11px;min-width:36px;text-align:right;}
+.perf-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;font-family:var(--mono);font-size:10px;border:1px solid;}
+.perf-badge.high{border-color:rgba(0,255,157,.3);color:var(--accent3);background:rgba(0,255,157,.05);}
+.perf-badge.mid{border-color:rgba(0,212,255,.3);color:var(--accent);background:rgba(0,212,255,.05);}
+.perf-badge.low{border-color:rgba(255,179,0,.3);color:var(--warn);background:rgba(255,179,0,.05);}
+.perf-badge.critical{border-color:rgba(255,61,87,.3);color:var(--danger);background:rgba(255,61,87,.05);}
+.expand-btn{background:transparent;border:1px solid var(--border);color:var(--text3);padding:4px 10px;font-family:var(--mono);font-size:10px;cursor:pointer;transition:all .2s;letter-spacing:1px;}
+.expand-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* MACHINE DETAIL PANEL */
+.detail-row{display:none;}
+.detail-row.open{display:table-row;}
+.detail-cell{padding:0 14px 16px;background:rgba(17,24,39,0.7);}
+.detail-inner{border:1px solid var(--border);padding:16px;}
+.detail-title{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--text2);text-transform:uppercase;margin-bottom:12px;}
+.machine-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;}
+.machine-item{background:var(--surface2);border:1px solid var(--border);padding:10px 12px;display:flex;flex-direction:column;gap:4px;transition:border-color .2s;}
+.machine-item:hover{border-color:var(--accent);}
+.machine-item.perf-high{border-left:2px solid var(--accent3);}
+.machine-item.perf-mid{border-left:2px solid var(--accent);}
+.machine-item.perf-low{border-left:2px solid var(--warn);}
+.machine-item.perf-critical{border-left:2px solid var(--danger);}
+.m-id{font-family:var(--mono);font-size:10px;color:var(--text3);}
+.m-game{font-size:12px;font-weight:500;color:var(--text);}
+.m-rev{display:flex;align-items:center;justify-content:space-between;margin-top:4px;}
+.m-rev-val{font-family:var(--mono);font-size:11px;}
+.m-rev-vs{font-family:var(--mono);font-size:9px;color:var(--text3);}
+
+/* VIEWS */
+.view-section{display:none;}
+.view-section.active{display:block;}
+
+/* COVERAGE VIEW */
+.coverage-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.panel{background:var(--surface);border:1px solid var(--border);padding:20px;animation:fadeUp .4s ease both;}
+.panel-title{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--text2);text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.game-coverage-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(31,47,74,.5);}
+.game-coverage-row:last-child{border-bottom:none;}
+.gcr-name{font-size:12px;flex:1;}
+.gcr-type{font-family:var(--mono);font-size:9px;color:var(--text3);min-width:32px;}
+.gcr-bar{flex:1;height:4px;background:var(--border);position:relative;max-width:120px;}
+.gcr-fill{position:absolute;top:0;left:0;height:100%;background:var(--accent);transition:width .6s ease;}
+.gcr-count{font-family:var(--mono);font-size:10px;color:var(--accent);min-width:36px;text-align:right;}
+.gcr-missing{font-family:var(--mono);font-size:9px;color:var(--text3);min-width:80px;text-align:right;}
+
+/* GAME PERFORMANCE */
+.game-perf-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(31,47,74,.5);}
+.game-perf-row:last-child{border-bottom:none;}
+.gpr-name{font-size:12px;flex:1;}
+.gpr-bar{flex:1;height:6px;background:var(--border);position:relative;max-width:100px;}
+.gpr-fill{position:absolute;top:0;left:0;height:100%;transition:width .6s ease;}
+.gpr-val{font-family:var(--mono);font-size:11px;min-width:60px;text-align:right;}
+.gpr-trend{font-family:var(--mono);font-size:10px;min-width:50px;text-align:right;}
+
+/* SUGGESTION VIEW */
+.suggestion-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+.sugg-card{background:var(--surface);border:1px solid var(--border);padding:18px;animation:fadeUp .4s ease both;}
+.sugg-card.urgent{border-left:3px solid var(--danger);}
+.sugg-card.warn{border-left:3px solid var(--warn);}
+.sugg-card.good{border-left:3px solid var(--accent3);}
+.sugg-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.sugg-casino{font-size:14px;font-weight:500;}
+.sugg-region{font-size:10px;color:var(--text3);}
+.sugg-machines{font-family:var(--mono);font-size:22px;color:var(--accent);}
+.sugg-machines span{font-size:10px;color:var(--text3);}
+.sugg-body{display:flex;flex-direction:column;gap:6px;}
+.sugg-item{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(31,47,74,.5);}
+.sugg-item:last-child{border-bottom:none;}
+.sugg-game{font-size:12px;}
+.sugg-action{font-family:var(--mono);font-size:9px;letter-spacing:1px;padding:3px 8px;border:1px solid;}
+.sugg-action.replace{border-color:rgba(255,61,87,.4);color:var(--danger);}
+.sugg-action.monitor{border-color:rgba(255,179,0,.4);color:var(--warn);}
+.sugg-action.keep{border-color:rgba(0,255,157,.4);color:var(--accent3);}
+
+/* ── MACHINE DETAIL: game-grouped table ── */
+.detail-game-table{width:100%;border-collapse:collapse;font-size:12px;}
+.detail-game-table th{padding:7px 12px;background:rgba(26,34,54,.8);font-family:var(--mono);font-size:9px;letter-spacing:1px;color:var(--text3);text-transform:uppercase;border-bottom:1px solid var(--border);text-align:left;}
+.detail-game-table th.r{text-align:right;}
+.detail-game-table td{padding:9px 12px;border-bottom:1px solid rgba(31,47,74,.4);vertical-align:middle;}
+.detail-game-table tr:last-child td{border-bottom:none;}
+.detail-game-table tr:hover td{background:rgba(0,212,255,.03);}
+.pupd-bar-wrap{display:flex;align-items:center;gap:8px;}
+.pupd-bar{width:80px;height:4px;background:var(--border);position:relative;flex-shrink:0;}
+.pupd-fill{position:absolute;top:0;left:0;height:100%;}
+.pupd-val{font-family:var(--mono);font-size:12px;min-width:44px;}
+.pupd-vs{font-family:var(--mono);font-size:10px;min-width:52px;text-align:right;}
+
+/* ── MACHINE COVERAGE SECTION ── */
+.coverage-machine-section{margin-top:20px;}
+.cov-region-block{border:1px solid var(--border);margin-bottom:12px;overflow:hidden;}
+.cov-region-header{display:flex;align-items:center;gap:0;background:var(--surface2);cursor:pointer;user-select:none;transition:background .15s;}
+.cov-region-header:hover{background:rgba(0,212,255,.06);}
+.cov-region-left{padding:12px 16px;flex:1;display:flex;align-items:center;gap:14px;}
+.cov-region-name{font-size:13px;font-weight:500;min-width:60px;}
+.cov-region-stats{font-family:var(--mono);font-size:11px;color:var(--text2);}
+.cov-region-bar-wrap{flex:1;display:flex;align-items:center;gap:10px;}
+.cov-region-bar{flex:1;height:6px;background:var(--border);position:relative;max-width:200px;}
+.cov-region-fill{position:absolute;top:0;left:0;height:100%;background:var(--accent);transition:width .6s ease;}
+.cov-region-pct{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent);min-width:44px;text-align:right;}
+.cov-region-chevron{padding:12px 16px;color:var(--text3);font-size:12px;transition:transform .2s;}
+.cov-region-chevron.open{transform:rotate(90deg);}
+.cov-casino-list{display:none;border-top:1px solid var(--border);}
+.cov-casino-list.open{display:block;}
+.cov-casino-row{display:flex;align-items:center;gap:14px;padding:10px 16px 10px 32px;border-bottom:1px solid rgba(31,47,74,.4);}
+.cov-casino-row:last-child{border-bottom:none;}
+.cov-casino-name{font-size:12px;min-width:120px;}
+.cov-casino-stats{font-family:var(--mono);font-size:11px;color:var(--text2);min-width:80px;}
+.cov-casino-bar-wrap{flex:1;display:flex;align-items:center;gap:8px;}
+.cov-casino-bar{flex:1;height:4px;background:var(--border);position:relative;max-width:160px;}
+.cov-casino-fill{position:absolute;top:0;left:0;height:100%;transition:width .6s ease;}
+.cov-casino-pct{font-family:var(--mono);font-size:11px;min-width:36px;text-align:right;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--accent3);color:var(--accent3);padding:10px 18px;font-family:var(--mono);font-size:11px;letter-spacing:1px;z-index:999;transform:translateY(16px);opacity:0;transition:all .3s;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* Legend */
+.legend{display:flex;gap:16px;margin-top:12px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:1px;flex-wrap:wrap;align-items:center;}
+.legend-item{display:flex;align-items:center;gap:5px;}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;}
+
+/* ── CSV IMPORT MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);padding:28px;max-width:520px;width:100%;position:relative;animation:fadeUp .3s ease;}
+.modal h2{font-size:15px;font-weight:500;margin-bottom:6px;}
+.modal-sub{font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.6;}
+.drop-zone{border:2px dashed var(--border);padding:32px 20px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px;position:relative;}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--accent);background:rgba(0,212,255,.04);}
+.drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.drop-icon{font-size:28px;margin-bottom:8px;}
+.drop-label{font-size:13px;color:var(--text2);}
+.drop-hint{font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:4px;}
+.csv-format{background:var(--surface2);border:1px solid var(--border);padding:12px 14px;margin-bottom:16px;}
+.csv-format-title{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--text2);text-transform:uppercase;margin-bottom:8px;}
+.csv-format-row{font-family:var(--mono);font-size:10px;color:var(--accent);line-height:1.8;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;}
+.modal-close{position:absolute;top:16px;right:16px;background:transparent;border:none;color:var(--text3);font-size:18px;cursor:pointer;line-height:1;}
+.modal-close:hover{color:var(--text);}
+.import-status{font-family:var(--mono);font-size:11px;padding:8px 12px;margin-bottom:12px;display:none;}
+.import-status.ok{display:block;background:rgba(0,255,157,.08);border:1px solid rgba(0,255,157,.2);color:var(--accent3);}
+.import-status.err{display:block;background:rgba(255,61,87,.08);border:1px solid rgba(255,61,87,.2);color:var(--danger);}
+.data-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;padding:3px 8px;border:1px solid rgba(0,255,157,.2);color:var(--accent3);background:rgba(0,255,157,.05);}
+
+/* ── MOBILE ── */
+@media(max-width:640px){
+  header{padding:0 14px;height:54px;}
+  .logo-sub{display:none;}
+  .logo-text{font-size:11px;}
+  .live-badge{display:none;}
+  .header-actions{gap:6px;}
+  .btn{padding:6px 10px;font-size:9px;}
+  .nav-tabs{padding:0 14px;overflow-x:auto;}
+  .tab{padding:10px 14px;font-size:9px;white-space:nowrap;}
+  main{padding:14px;}
+  .kpi-row{grid-template-columns:repeat(2,1fr);gap:8px;}
+  .kpi-value{font-size:22px;}
+  .coverage-layout{grid-template-columns:1fr;}
+  .controls{gap:8px;}
+  .controls select{font-size:11px;}
+  .suggestion-grid{grid-template-columns:1fr;}
+  .cov-region-left{flex-wrap:wrap;gap:8px;}
+  .cov-region-bar-wrap{min-width:100%;}
+  table{font-size:11px;}
+  td,th{padding:8px 10px;}
+}
+@media(max-width:900px){
+  .kpi-row{grid-template-columns:repeat(2,1fr);}
+  .coverage-layout{grid-template-columns:1fr;}
+  main{padding:16px;}
+}
+
+/* ── PASSWORD SCREEN ── */
+#pwScreen{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:0;
+  padding:24px;
+}
+#pwScreen::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,.025) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;
+}
+.pw-box{
+  background:var(--surface);border:1px solid var(--border);
+  padding:40px 36px;width:100%;max-width:400px;
+  position:relative;animation:fadeUp .4s ease;
+}
+.pw-box::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent3));
+}
+.pw-logo{
+  display:flex;align-items:center;gap:12px;margin-bottom:32px;
+}
+.pw-logo-icon{
+  width:36px;height:36px;border:1.5px solid var(--accent);
+  display:grid;place-items:center;
+  font-family:var(--mono);font-size:11px;color:var(--accent);
+}
+.pw-logo-text{font-size:14px;font-weight:500;letter-spacing:2px;text-transform:uppercase;}
+.pw-logo-sub{font-family:var(--mono);font-size:9px;color:var(--text2);letter-spacing:1px;margin-top:2px;}
+.pw-label{
+  font-family:var(--mono);font-size:9px;letter-spacing:2px;
+  color:var(--text2);text-transform:uppercase;margin-bottom:8px;
+}
+.pw-input-wrap{position:relative;margin-bottom:8px;}
+.pw-input{
+  width:100%;background:var(--surface2);border:1px solid var(--border);
+  color:var(--text);font-family:var(--mono);font-size:14px;
+  padding:12px 44px 12px 14px;outline:none;
+  transition:border-color .2s;letter-spacing:2px;
+}
+.pw-input:focus{border-color:var(--accent);}
+.pw-toggle{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:transparent;border:none;color:var(--text3);
+  cursor:pointer;font-size:15px;padding:4px;
+}
+.pw-toggle:hover{color:var(--text2);}
+.pw-error{
+  font-family:var(--mono);font-size:10px;color:var(--danger);
+  min-height:16px;margin-bottom:16px;letter-spacing:.5px;
+  display:flex;align-items:center;gap:5px;
+}
+.pw-btn{
+  width:100%;padding:13px;
+  background:transparent;border:1px solid var(--accent);
+  color:var(--accent);font-family:var(--mono);font-size:11px;
+  letter-spacing:2px;cursor:pointer;text-transform:uppercase;
+  transition:all .2s;
+}
+.pw-btn:hover{background:var(--accent);color:var(--bg);}
+.pw-btn:active{transform:scale(.98);}
+.pw-remember{
+  display:flex;align-items:center;gap:8px;margin-bottom:20px;cursor:pointer;
+}
+.pw-remember input{accent-color:var(--accent);width:13px;height:13px;cursor:pointer;}
+.pw-remember span{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.5px;}
+.pw-footer{
+  margin-top:20px;text-align:center;
+  font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:1px;
+}
+.pw-shake{animation:shake .4s ease;}
+@keyframes shake{
+  0%,100%{transform:translateX(0);}
+  20%{transform:translateX(-8px);}
+  40%{transform:translateX(8px);}
+  60%{transform:translateX(-6px);}
+  80%{transform:translateX(6px);}
+}
+
+/* ── CHANGE PASSWORD MODAL ── */
+.chpw-modal{
+  background:var(--surface);border:1px solid var(--border);
+  padding:24px;max-width:360px;width:100%;position:relative;
+  animation:fadeUp .3s ease;
+}
+.chpw-modal h3{font-size:14px;font-weight:500;margin-bottom:16px;}
+.chpw-field{margin-bottom:12px;}
+.chpw-field label{
+  display:block;font-family:var(--mono);font-size:9px;
+  letter-spacing:1px;color:var(--text2);text-transform:uppercase;margin-bottom:5px;
+}
+.chpw-field input{
+  width:100%;background:var(--surface2);border:1px solid var(--border);
+  color:var(--text);font-family:var(--mono);font-size:13px;
+  padding:9px 12px;outline:none;transition:border-color .2s;
+}
+.chpw-field input:focus{border-color:var(--accent);}
+.chpw-err{font-family:var(--mono);font-size:10px;color:var(--danger);min-height:14px;margin-bottom:10px;}
+.chpw-actions{display:flex;gap:8px;justify-content:flex-end;}
+</style>
+</head>
+<body>
+
+<!-- ── PASSWORD SCREEN ── -->
+<div id="pwScreen">
+  <div class="pw-box" id="pwBox">
+    <div class="pw-logo">
+      <div class="pw-logo-icon">SLT</div>
+      <div>
+        <div class="pw-logo-text">機台策略系統</div>
+        <div class="pw-logo-sub">SLOT MANAGEMENT DASHBOARD</div>
+      </div>
+    </div>
+    <div class="pw-label">請輸入存取密碼</div>
+    <div class="pw-input-wrap">
+      <input class="pw-input" type="password" id="pwInput" placeholder="••••••••"
+        onkeydown="if(event.key==='Enter')submitPw()">
+      <button class="pw-toggle" onclick="togglePwVis()" id="pwToggle" title="顯示/隱藏">👁</button>
+    </div>
+    <div class="pw-error" id="pwError"></div>
+    <label class="pw-remember">
+      <input type="checkbox" id="pwRemember" checked>
+      <span>記住我（7天內免登入）</span>
+    </label>
+    <button class="pw-btn" onclick="submitPw()">進入系統</button>
+    <div class="pw-footer">如忘記密碼請聯絡系統管理員</div>
+  </div>
+</div>
+
+<!-- ── CHANGE PASSWORD MODAL ── -->
+<div class="modal-overlay" id="chpwModal">
+  <div class="chpw-modal">
+    <button class="modal-close" onclick="closeChpw()">✕</button>
+    <h3>🔑 變更一般密碼</h3>
+    <div class="chpw-field">
+      <label>管理員密碼（驗證身份用）</label>
+      <input type="password" id="chpwAdmin" placeholder="輸入管理員密碼">
+    </div>
+    <div class="chpw-field">
+      <label>新的一般密碼（至少 4 個字元）</label>
+      <input type="password" id="chpwNew" placeholder="設定新的一般密碼">
+    </div>
+    <div class="chpw-field">
+      <label>確認新密碼</label>
+      <input type="password" id="chpwConfirm" placeholder="再輸入一次">
+    </div>
+    <div class="chpw-err" id="chpwErr"></div>
+    <div class="chpw-actions">
+      <button class="btn" onclick="closeChpw()">取消</button>
+      <button class="btn primary" onclick="submitChpw()">確認變更</button>
+    </div>
+  </div>
+</div>
+
+<div class="app" id="mainApp" style="display:none">
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">SLT</div>
+    <div>
+      <div class="logo-text">機台策略系統</div>
+      <div class="logo-sub">SLOT MANAGEMENT DASHBOARD · v4</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <div class="live-badge"><div class="live-dot"></div><span id="dataDateLabel">示範資料</span></div>
+    <button class="btn" onclick="openChpw()" title="變更密碼">🔑</button>
+    <button class="btn" onclick="openImport()">⬆ 匯入資料</button>
+    <button class="btn primary" onclick="exportCSV()">⬇ 匯出 CSV</button>
+  </div>
+</header>
+
+<div class="nav-tabs">
+  <div class="tab active" onclick="switchTab('overview')">總覽</div>
+  <div class="tab" onclick="switchTab('coverage')">遊戲覆蓋率</div>
+  <div class="tab" onclick="switchTab('suggestions')">更換建議</div>
+</div>
+
+<main>
+
+  <!-- KPI -->
+  <div class="kpi-row">
+    <div class="kpi-card c1" style="animation-delay:.05s">
+      <div class="kpi-label">合作賭場</div>
+      <div class="kpi-value">12</div>
+      <div class="kpi-sub">間</div>
+    </div>
+    <div class="kpi-card c2" style="animation-delay:.1s">
+      <div class="kpi-label">總機台數</div>
+      <div class="kpi-value">138</div>
+      <div class="kpi-sub">台</div>
+    </div>
+    <div class="kpi-card c3" style="animation-delay:.15s">
+      <div class="kpi-label">遊戲種類</div>
+      <div class="kpi-value">16</div>
+      <div class="kpi-sub">款</div>
+    </div>
+    <div class="kpi-card c4" style="animation-delay:.2s">
+      <div class="kpi-label">低於平均</div>
+      <div class="kpi-value" id="kpiLow">—</div>
+      <div class="kpi-sub">台機台需關注</div>
+    </div>
+    <div class="kpi-card c5" style="animation-delay:.25s">
+      <div class="kpi-label">建議更換</div>
+      <div class="kpi-value" id="kpiReplace">—</div>
+      <div class="kpi-sub">台機台</div>
+    </div>
+  </div>
+
+  <!-- ── TAB: OVERVIEW ── -->
+  <div id="tab-overview" class="view-section active">
+    <div class="controls">
+      <div class="search-box">
+        <span style="color:var(--text3);font-size:13px;">🔍</span>
+        <input type="text" id="search" placeholder="搜尋賭場名稱、遊戲..." oninput="renderOverview()">
+      </div>
+      <select id="filterRegion" onchange="renderOverview()">
+        <option value="">所有地區</option>
+        <option value="澳門">澳門</option>
+        <option value="菲律賓">菲律賓</option>
+        <option value="越南">越南</option>
+        <option value="柬埔寨">柬埔寨</option>
+      </select>
+      <select id="filterPerf" onchange="renderOverview()">
+        <option value="">所有表現</option>
+        <option value="high">🟢 優良</option>
+        <option value="mid">🔵 正常</option>
+        <option value="low">🟡 偏低</option>
+        <option value="critical">🔴 危險</option>
+      </select>
+      <select id="sortBy" onchange="renderOverview()">
+        <option value="region_asc">排序：依地區分組</option>
+        <option value="rev_desc">排序：平均營收（高→低）</option>
+        <option value="rev_asc">排序：平均營收（低→高）</option>
+        <option value="machines_desc">排序：機台數（多→少）</option>
+        <option value="name_asc">排序：賭場名稱</option>
+      </select>
+    </div>
+
+    <div class="section-header">
+      <div class="section-title">賭場機台一覽</div>
+      <div class="result-count" id="resultCount">12 / 12 間賭場</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>賭場</th>
+            <th onclick="setSort('machines_desc')">機台數</th>
+            <th>安裝遊戲</th>
+            <th onclick="setSort('rev_desc')">平均營收 / 台</th>
+            <th>賭場基準</th>
+            <th>整體表現</th>
+            <th>明細</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="legend">
+      <span style="color:var(--text2);letter-spacing:2px;">表現基準 ▸</span>
+      <span class="legend-item"><span class="dot" style="background:var(--accent3)"></span>優良 ≥120% 平均</span>
+      <span class="legend-item"><span class="dot" style="background:var(--accent)"></span>正常 90–119%</span>
+      <span class="legend-item"><span class="dot" style="background:var(--warn)"></span>偏低 70–89%</span>
+      <span class="legend-item"><span class="dot" style="background:var(--danger)"></span>危險 &lt;70%</span>
+    </div>
+  </div>
+
+  <!-- ── TAB: COVERAGE ── -->
+  <div id="tab-coverage" class="view-section">
+
+    <!-- NEW: Machine Coverage by Region/Casino -->
+    <div class="section-header" style="margin-bottom:10px;">
+      <div class="section-title">機台覆蓋率 — 各地區 / 各賭場</div>
+      <div class="result-count">我方機台數 / 各賭場總機台數</div>
+    </div>
+    <div class="panel" style="padding:0;animation-delay:.02s;">
+      <div id="machineCoverage"></div>
+    </div>
+
+    <!-- EXISTING: Game Coverage -->
+    <div class="section-header" style="margin-top:24px;margin-bottom:10px;">
+      <div class="section-title">遊戲覆蓋率 — 遊戲角度</div>
+    </div>
+    <div class="coverage-layout">
+      <div class="panel" style="animation-delay:.05s">
+        <div class="panel-title">遊戲橫向分佈（覆蓋幾間賭場）</div>
+        <div id="coverageHorizontal"></div>
+      </div>
+      <div class="panel" style="animation-delay:.1s">
+        <div class="panel-title">遊戲縱向表現（全局平均 PUPD）</div>
+        <div id="coverageVertical"></div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:16px;animation-delay:.15s">
+      <div class="panel-title">空缺提示 — 哪些賭場還沒裝這款遊戲</div>
+      <div id="gapPanel"></div>
+    </div>
+  </div>
+
+  <!-- ── TAB: SUGGESTIONS ── -->
+  <div id="tab-suggestions" class="view-section">
+    <div class="section-header" style="margin-bottom:16px;">
+      <div class="section-title">依賭場的更換建議</div>
+      <div class="result-count">根據各機台與賭場平均值對比</div>
+    </div>
+    <div class="suggestion-grid" id="suggestionGrid"></div>
+  </div>
+
+</main>
+</div>
+
+<!-- CSV IMPORT MODAL -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeImport()">✕</button>
+    <h2>匯入資料</h2>
+    <div class="modal-sub">上傳 CSV 檔案後，儀表板所有數據將自動更新。<br>每次有新資料時重複此步驟即可，不需要修改任何程式碼。</div>
+
+    <div class="csv-format">
+      <div class="csv-format-title">CSV 欄位格式（第一行為標題列）</div>
+      <div class="csv-format-row">賭場名稱, 地區, 機台編號, 遊戲名稱, 遊戲類型, 月營收, 賭場基準月營收, 賭場總機台數</div>
+    </div>
+
+    <div class="drop-zone" id="dropZone">
+      <input type="file" accept=".csv" id="csvFileInput" onchange="handleFileSelect(this.files[0])">
+      <div class="drop-icon">📂</div>
+      <div class="drop-label">點擊選擇 CSV 檔案，或直接拖曳到這裡</div>
+      <div class="drop-hint">支援 .csv 格式 · UTF-8 或 BIG5 編碼</div>
+    </div>
+
+    <div class="import-status" id="importStatus"></div>
+
+    <div class="modal-actions">
+      <button class="btn" onclick="downloadTemplate()">⬇ 下載範本</button>
+      <button class="btn" onclick="closeImport()">取消</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════
+const GAMES = {
+  G01:{name:'黃金龍',type:'slots',label:'老虎機'},
+  G02:{name:'鳳凰傳說',type:'slots',label:'老虎機'},
+  G03:{name:'招財貓',type:'slots',label:'老虎機'},
+  G04:{name:'武財神',type:'slots',label:'老虎機'},
+  G05:{name:'星際探索',type:'slots',label:'老虎機'},
+  G06:{name:'雷霆百搭',type:'slots',label:'老虎機'},
+  G07:{name:'百家樂',type:'table',label:'桌牌'},
+  G08:{name:'龍虎鬥',type:'table',label:'桌牌'},
+  G09:{name:'三公',type:'table',label:'桌牌'},
+  G10:{name:'深海捕魚',type:'fish',label:'魚機'},
+  G11:{name:'雷霆捕魚',type:'fish',label:'魚機'},
+  G12:{name:'西遊記',type:'slots',label:'老虎機'},
+  G13:{name:'埃及豔后',type:'slots',label:'老虎機'},
+  G14:{name:'幸運輪盤',type:'other',label:'其他'},
+  G15:{name:'極速21點',type:'table',label:'桌牌'},
+  G16:{name:'翡翠麻將',type:'other',label:'其他'},
+};
+
+// 每間賭場的設定：基準值(casinoAvg) + 機台明細
+const CASINOS = [
+  {
+    id:1, name:'金沙皇宮', region:'澳門',
+    casinoAvg: 85000, // 這間賭場的基準平均值（元/台/月）
+    machines:[
+      {id:'M001',game:'G01',rev:102000},{id:'M002',game:'G01',rev:78000},
+      {id:'M003',game:'G02',rev:91000},{id:'M004',game:'G02',rev:65000},
+      {id:'M005',game:'G07',rev:120000},{id:'M006',game:'G07',rev:115000},
+      {id:'M007',game:'G07',rev:98000},{id:'M008',game:'G10',rev:55000},
+      {id:'M009',game:'G10',rev:48000},{id:'M010',game:'G10',rev:52000},
+      {id:'M011',game:'G01',rev:88000},{id:'M012',game:'G02',rev:73000},
+      {id:'M013',game:'G07',rev:105000},{id:'M014',game:'G10',rev:42000},
+      {id:'M015',game:'G01',rev:95000},{id:'M016',game:'G02',rev:81000},
+      {id:'M017',game:'G07',rev:110000},{id:'M018',game:'G10',rev:59000},
+    ]
+  },
+  {
+    id:2, name:'澳博娛樂場', region:'澳門',
+    casinoAvg: 72000,
+    machines:[
+      {id:'M101',game:'G03',rev:88000},{id:'M102',game:'G03',rev:75000},
+      {id:'M103',game:'G04',rev:65000},{id:'M104',game:'G04',rev:58000},
+      {id:'M105',game:'G08',rev:95000},{id:'M106',game:'G08',rev:89000},
+      {id:'M107',game:'G11',rev:61000},{id:'M108',game:'G11',rev:54000},
+      {id:'M109',game:'G03',rev:70000},{id:'M110',game:'G04',rev:48000},
+      {id:'M111',game:'G08',rev:82000},{id:'M112',game:'G11',rev:45000},
+    ]
+  },
+  {
+    id:3, name:'銀河渡假村', region:'澳門',
+    casinoAvg: 95000,
+    machines:[
+      {id:'M201',game:'G01',rev:118000},{id:'M202',game:'G01',rev:105000},
+      {id:'M203',game:'G05',rev:88000},{id:'M204',game:'G05',rev:92000},
+      {id:'M205',game:'G07',rev:140000},{id:'M206',game:'G07',rev:135000},
+      {id:'M207',game:'G14',rev:62000},{id:'M208',game:'G14',rev:58000},
+      {id:'M209',game:'G01',rev:111000},{id:'M210',game:'G05',rev:79000},
+      {id:'M211',game:'G07',rev:128000},{id:'M212',game:'G14',rev:55000},
+      {id:'M213',game:'G01',rev:99000},{id:'M214',game:'G05',rev:85000},
+      {id:'M215',game:'G07',rev:125000},
+    ]
+  },
+  {
+    id:4, name:'Okada馬尼拉', region:'菲律賓',
+    casinoAvg: 68000,
+    machines:[
+      {id:'M301',game:'G02',rev:82000},{id:'M302',game:'G02',rev:71000},
+      {id:'M303',game:'G06',rev:75000},{id:'M304',game:'G06',rev:68000},
+      {id:'M305',game:'G09',rev:90000},{id:'M306',game:'G09',rev:85000},
+      {id:'M307',game:'G10',rev:45000},{id:'M308',game:'G10',rev:38000},
+      {id:'M309',game:'G02',rev:64000},{id:'M310',game:'G06',rev:55000},
+      {id:'M311',game:'G09',rev:78000},{id:'M312',game:'G10',rev:41000},
+      {id:'M313',game:'G02',rev:77000},{id:'M314',game:'G06',rev:61000},
+    ]
+  },
+  {
+    id:5, name:'City of Dreams', region:'菲律賓',
+    casinoAvg: 62000,
+    machines:[
+      {id:'M401',game:'G03',rev:78000},{id:'M402',game:'G03',rev:69000},
+      {id:'M403',game:'G12',rev:55000},{id:'M404',game:'G12',rev:48000},
+      {id:'M405',game:'G15',rev:88000},{id:'M406',game:'G15',rev:82000},
+      {id:'M407',game:'G03',rev:62000},{id:'M408',game:'G12',rev:42000},
+      {id:'M409',game:'G15',rev:75000},{id:'M410',game:'G12',rev:38000},
+    ]
+  },
+  {
+    id:6, name:'Solaire Resort', region:'菲律賓',
+    casinoAvg: 58000,
+    machines:[
+      {id:'M501',game:'G04',rev:72000},{id:'M502',game:'G04',rev:65000},
+      {id:'M503',game:'G07',rev:85000},{id:'M504',game:'G07',rev:79000},
+      {id:'M505',game:'G11',rev:48000},{id:'M506',game:'G11',rev:42000},
+      {id:'M507',game:'G04',rev:58000},{id:'M508',game:'G07',rev:71000},
+    ]
+  },
+  {
+    id:7, name:'河內皇冠賭場', region:'越南',
+    casinoAvg: 52000,
+    machines:[
+      {id:'M601',game:'G01',rev:65000},{id:'M602',game:'G01',rev:58000},
+      {id:'M603',game:'G08',rev:72000},{id:'M604',game:'G08',rev:68000},
+      {id:'M605',game:'G13',rev:38000},{id:'M606',game:'G13',rev:32000},
+      {id:'M607',game:'G01',rev:55000},{id:'M608',game:'G08',rev:61000},
+      {id:'M609',game:'G13',rev:29000},{id:'M610',game:'G01',rev:49000},
+      {id:'M611',game:'G13',rev:35000},
+    ]
+  },
+  {
+    id:8, name:'胡志明星際城', region:'越南',
+    casinoAvg: 48000,
+    machines:[
+      {id:'M701',game:'G05',rev:59000},{id:'M702',game:'G05',rev:52000},
+      {id:'M703',game:'G10',rev:44000},{id:'M704',game:'G10',rev:38000},
+      {id:'M705',game:'G16',rev:55000},{id:'M706',game:'G16',rev:49000},
+      {id:'M707',game:'G05',rev:46000},{id:'M708',game:'G10',rev:35000},
+      {id:'M709',game:'G16',rev:42000},
+    ]
+  },
+  {
+    id:9, name:'峴港鑽石賭場', region:'越南',
+    casinoAvg: 44000,
+    machines:[
+      {id:'M801',game:'G02',rev:52000},{id:'M802',game:'G02',rev:48000},
+      {id:'M803',game:'G09',rev:61000},{id:'M804',game:'G09',rev:55000},
+      {id:'M805',game:'G14',rev:35000},{id:'M806',game:'G14',rev:28000},
+      {id:'M807',game:'G02',rev:44000},
+    ]
+  },
+  {
+    id:10, name:'金邊NagaWorld', region:'柬埔寨',
+    casinoAvg: 75000,
+    machines:[
+      {id:'M901',game:'G01',rev:92000},{id:'M902',game:'G01',rev:85000},
+      {id:'M903',game:'G04',rev:68000},{id:'M904',game:'G04',rev:61000},
+      {id:'M905',game:'G06',rev:79000},{id:'M906',game:'G06',rev:72000},
+      {id:'M907',game:'G07',rev:105000},{id:'M908',game:'G07',rev:98000},
+      {id:'M909',game:'G11',rev:52000},{id:'M910',game:'G11',rev:45000},
+      {id:'M911',game:'G01',rev:88000},{id:'M912',game:'G04',rev:55000},
+      {id:'M913',game:'G06',rev:66000},{id:'M914',game:'G07',rev:91000},
+      {id:'M915',game:'G11',rev:48000},{id:'M916',game:'G01',rev:81000},
+    ]
+  },
+  {
+    id:11, name:'西哈努克海灣城', region:'柬埔寨',
+    casinoAvg: 55000,
+    machines:[
+      {id:'MA01',game:'G03',rev:68000},{id:'MA02',game:'G03',rev:61000},
+      {id:'MA03',game:'G08',rev:75000},{id:'MA04',game:'G08',rev:69000},
+      {id:'MA05',game:'G12',rev:48000},{id:'MA06',game:'G12',rev:42000},
+      {id:'MA07',game:'G15',rev:82000},{id:'MA08',game:'G15',rev:76000},
+      {id:'MA09',game:'G03',rev:55000},{id:'MA10',game:'G12',rev:38000},
+    ]
+  },
+  {
+    id:12, name:'暹粒吳哥賭場', region:'柬埔寨',
+    casinoAvg: 42000,
+    machines:[
+      {id:'MB01',game:'G02',rev:51000},{id:'MB02',game:'G02',rev:45000},
+      {id:'MB03',game:'G05',rev:58000},{id:'MB04',game:'G05',rev:52000},
+      {id:'MB05',game:'G13',rev:32000},{id:'MB06',game:'G13',rev:28000},
+      {id:'MB07',game:'G16',rev:49000},{id:'MB08',game:'G16',rev:43000},
+    ]
+  },
+];
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+function avgRev(machines){ return Math.round(machines.reduce((s,m)=>s+m.rev,0)/machines.length); }
+
+function perfClass(rev, base){
+  const pct = rev / base;
+  if(pct >= 1.20) return 'high';
+  if(pct >= 0.90) return 'mid';
+  if(pct >= 0.70) return 'low';
+  return 'critical';
+}
+
+function perfLabel(cls){
+  return {high:'🟢 優良',mid:'🔵 正常',low:'🟡 偏低',critical:'🔴 危險'}[cls];
+}
+
+function perfColor(cls){
+  return {high:'var(--accent3)',mid:'var(--accent)',low:'var(--warn)',critical:'var(--danger)'}[cls];
+}
+
+function fmtRev(n){ return (n/1000).toFixed(0)+'K'; }
+
+function getUniqueGames(casino){
+  return [...new Set(casino.machines.map(m=>m.game))];
+}
+
+// ═══════════════════════════════════════════════════════════
+// KPI
+// ═══════════════════════════════════════════════════════════
+function updateKPIs(){
+  let low=0, replace=0;
+  CASINOS.forEach(c=>{
+    c.machines.forEach(m=>{
+      const cls = perfClass(m.rev, c.casinoAvg);
+      if(cls==='low'||cls==='critical') low++;
+      if(cls==='critical') replace++;
+    });
+  });
+  document.getElementById('kpiLow').textContent = low;
+  document.getElementById('kpiReplace').textContent = replace;
+}
+
+// ═══════════════════════════════════════════════════════════
+// TAB: OVERVIEW
+// ═══════════════════════════════════════════════════════════
+let openDetail = null;
+
+function getFilteredCasinos(){
+  const q = document.getElementById('search').value.toLowerCase();
+  const region = document.getElementById('filterRegion').value;
+  const perf = document.getElementById('filterPerf').value;
+  const sort = document.getElementById('sortBy').value;
+
+  let data = CASINOS.map(c=>({
+    ...c,
+    avgRev: avgRev(c.machines),
+    games: getUniqueGames(c),
+  }));
+
+  if(q) data = data.filter(c=>
+    c.name.toLowerCase().includes(q) ||
+    c.games.some(g=>GAMES[g].name.toLowerCase().includes(q))
+  );
+  if(region) data = data.filter(c=>c.region===region);
+  if(perf) data = data.filter(c=>perfClass(avgRev(c.machines),c.casinoAvg)===perf);
+
+  data.sort((a,b)=>{
+    if(sort==='region_asc'){
+      const rc = a.region.localeCompare(b.region,'zh-TW');
+      return rc !== 0 ? rc : a.name.localeCompare(b.name,'zh-TW');
+    }
+    if(sort==='rev_desc') return b.avgRev-a.avgRev;
+    if(sort==='rev_asc') return a.avgRev-b.avgRev;
+    if(sort==='machines_desc') return b.machines.length-a.machines.length;
+    if(sort==='name_asc') return a.name.localeCompare(b.name,'zh-TW');
+    return 0;
+  });
+  return data;
+}
+
+function renderOverview(){
+  const data = getFilteredCasinos();
+  const regionFilter = document.getElementById('filterRegion').value;
+  document.getElementById('resultCount').textContent = `${data.length} / ${CASINOS.length} 間賭場`;
+
+  const allRevs = CASINOS.flatMap(c=>c.machines.map(m=>m.rev));
+  const maxRev = Math.max(...allRevs);
+
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML='';
+
+  // Region color map
+  const regionColors = {
+    '澳門':'var(--accent)', '菲律賓':'var(--accent3)',
+    '越南':'var(--warn)', '柬埔寨':'var(--accent2)'
+  };
+
+  let lastRegion = null;
+  let rowIndex = 0;
+
+  data.forEach((c)=>{
+    // ── Region divider row (only when showing all regions) ──
+    if(!regionFilter && c.region !== lastRegion){
+      lastRegion = c.region;
+      const regionColor = regionColors[c.region] || 'var(--text2)';
+      // Count casinos + machines in this region from filtered data
+      const regionCasinos = data.filter(x=>x.region===c.region);
+      const regionMachines = regionCasinos.reduce((s,x)=>s+x.machines.length,0);
+
+      const divTr = document.createElement('tr');
+      divTr.innerHTML=`
+        <td colspan="7" style="
+          padding:8px 14px;
+          background:var(--surface2);
+          border-top:2px solid ${regionColor};
+          border-bottom:1px solid var(--border);
+          user-select:none;
+        ">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span style="
+              font-family:var(--mono);font-size:10px;font-weight:600;
+              letter-spacing:3px;text-transform:uppercase;color:${regionColor};
+            ">${c.region}</span>
+            <span style="flex:1;height:1px;background:linear-gradient(90deg,${regionColor}44,transparent);"></span>
+            <span style="font-family:var(--mono);font-size:9px;color:var(--text3);">
+              ${regionCasinos.length} 間賭場 · ${regionMachines} 台機台
+            </span>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(divTr);
+    }
+
+    const ar = c.avgRev;
+    const cls = perfClass(ar, c.casinoAvg);
+    const pct = Math.round(ar/c.casinoAvg*100);
+    const barW = Math.round(ar/maxRev*100);
+    const color = perfColor(cls);
+
+    // Main row
+    const tr = document.createElement('tr');
+    tr.style.animationDelay=(rowIndex*.03)+'s';
+    rowIndex++;
+    tr.innerHTML=`
+      <td class="casino-name-cell">
+        <div class="name">${c.name}</div>
+        <div class="region">${c.region}</div>
+      </td>
+      <td><div class="machine-num">${c.machines.length}</div></td>
+      <td>
+        <div class="games-tags">
+          ${c.games.map(g=>`<span class="tag ${GAMES[g]?.type||'other'}">${GAMES[g]?.name||g}</span>`).join('')}
+        </div>
+      </td>
+      <td>
+        <div class="rev-bar-wrap">
+          <div class="rev-bar"><div class="rev-fill" style="width:${barW}%;background:${color}"></div></div>
+          <div class="rev-label" style="color:${color}">${fmtRev(ar)}</div>
+        </div>
+      </td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--text3)">
+        基準 ${fmtRev(c.casinoAvg)}<br>
+        <span style="color:${color}">${pct >= 100 ? '+' : ''}${pct-100}%</span>
+      </td>
+      <td>
+        <span class="perf-badge ${cls}">${perfLabel(cls)}</span>
+      </td>
+      <td>
+        <button class="expand-btn" onclick="toggleDetail(${c.id}, this)">▶ 展開</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+
+    // Detail row
+    const dr = document.createElement('tr');
+    dr.className='detail-row';
+    dr.id=`detail-${c.id}`;
+    const dc = document.createElement('td');
+    dc.className='detail-cell';
+    dc.colSpan=7;
+    dc.innerHTML=buildDetailHTML(c);
+    dr.appendChild(dc);
+    tbody.appendChild(dr);
+  });
+}
+
+function buildDetailHTML(c){
+  // Group machines by game
+  const byGame = {};
+  c.machines.forEach(m=>{
+    if(!byGame[m.game]) byGame[m.game]=[];
+    byGame[m.game].push(m);
+  });
+
+  const maxPupd = Math.max(...c.machines.map(m=>m.rev/30));
+
+  const rows = Object.entries(byGame).map(([gid, ms])=>{
+    const game = GAMES[gid];
+    const avgMonthly = Math.round(ms.reduce((s,m)=>s+m.rev,0)/ms.length);
+    const pupd = (avgMonthly/30).toFixed(0);
+    const cls = perfClass(avgMonthly, c.casinoAvg);
+    const color = perfColor(cls);
+    const barW = Math.round((avgMonthly/30)/maxPupd*100);
+    const pct = Math.round(avgMonthly/c.casinoAvg*100)-100;
+    return `
+      <tr>
+        <td>
+          <span class="tag ${game.type}">${game.name}</span>
+        </td>
+        <td style="text-align:center;font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent)">${ms.length}</td>
+        <td>
+          <div class="pupd-bar-wrap">
+            <div class="pupd-bar"><div class="pupd-fill" style="width:${barW}%;background:${color}"></div></div>
+            <span class="pupd-val" style="color:${color}">${Number(pupd).toLocaleString()}</span>
+          </div>
+        </td>
+        <td class="r">
+          <span class="perf-badge ${cls}" style="font-size:9px;">${pct>=0?'+':''}${pct}% · ${perfLabel(cls)}</span>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  const casinoPupd = (c.casinoAvg/30).toFixed(0);
+  return `
+    <div class="detail-inner">
+      <div class="detail-title">
+        <span>${c.name} 機台明細 — 依遊戲分組</span>
+        <span style="font-weight:400;color:var(--text3)">基準 PUPD：${Number(casinoPupd).toLocaleString()} · 共 ${c.machines.length} 台</span>
+      </div>
+      <table class="detail-game-table">
+        <thead>
+          <tr>
+            <th>遊戲</th>
+            <th style="text-align:center">台數</th>
+            <th>平均 PUPD（元/台/日）</th>
+            <th class="r">vs 賭場基準</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function toggleDetail(id, btn){
+  const row = document.getElementById(`detail-${id}`);
+  const isOpen = row.classList.contains('open');
+  // close all
+  document.querySelectorAll('.detail-row.open').forEach(r=>r.classList.remove('open'));
+  document.querySelectorAll('.expand-btn').forEach(b=>{b.textContent='▶ 展開';});
+  if(!isOpen){
+    row.classList.add('open');
+    btn.textContent='▼ 收起';
+  }
+}
+
+function setSort(val){ document.getElementById('sortBy').value=val; renderOverview(); }
+
+// ═══════════════════════════════════════════════════════════
+// MACHINE COVERAGE (region → casino drill-down)
+// ═══════════════════════════════════════════════════════════
+// CASINOS[].totalMachines = 該賭場的全部機台總數（假設我方佔比）
+// 我們用 machines.length 作為「我方台數」
+// totalMachines = 賭場實際總機台數（需填入真實值，這裡用假設值）
+const CASINO_TOTAL = {
+  1:60, 2:45, 3:55, 4:50, 5:40, 6:35,
+  7:38, 8:32, 9:28, 10:58, 11:42, 12:35
+};
+
+function renderMachineCoverage(){
+  // Group casinos by region
+  const regions = {};
+  CASINOS.forEach(c=>{
+    if(!regions[c.region]) regions[c.region]={casinos:[],ourTotal:0,casinoTotal:0};
+    regions[c.region].casinos.push(c);
+    regions[c.region].ourTotal += c.machines.length;
+    regions[c.region].casinoTotal += (CASINO_TOTAL[c.id]||c.machines.length);
+  });
+
+  const allOur = Object.values(regions).reduce((s,r)=>s+r.ourTotal,0);
+  const allTotal = Object.values(regions).reduce((s,r)=>s+r.casinoTotal,0);
+  const globalPct = Math.round(allOur/allTotal*100);
+
+  let html = `
+    <!-- Global summary bar -->
+    <div style="display:flex;align-items:center;gap:16px;padding:14px 16px;background:var(--surface2);border-bottom:1px solid var(--border);">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text2);letter-spacing:1px;min-width:80px;">全球總覽</div>
+      <div style="flex:1;display:flex;align-items:center;gap:10px;">
+        <div style="flex:1;height:8px;background:var(--border);position:relative;max-width:300px;">
+          <div style="position:absolute;top:0;left:0;height:100%;width:${globalPct}%;background:var(--accent);transition:width .6s;"></div>
+        </div>
+        <span style="font-family:var(--mono);font-size:14px;font-weight:600;color:var(--accent)">${globalPct}%</span>
+      </div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--text2);">${allOur} 台（我方）/ ${allTotal} 台（賭場總計）</div>
+    </div>
+  `;
+
+  Object.entries(regions).forEach(([regionName, r],i)=>{
+    const pct = Math.round(r.ourTotal/r.casinoTotal*100);
+    const color = pct>=60?'var(--accent3)':pct>=40?'var(--accent)':pct>=25?'var(--warn)':'var(--danger)';
+    const blockId = `cov-region-${i}`;
+
+    const casinoRows = r.casinos.map(c=>{
+      const total = CASINO_TOTAL[c.id]||c.machines.length;
+      const cp = Math.round(c.machines.length/total*100);
+      const cc = cp>=60?'var(--accent3)':cp>=40?'var(--accent)':cp>=25?'var(--warn)':'var(--danger)';
+      return `
+        <div class="cov-casino-row">
+          <div class="cov-casino-name">${c.name}</div>
+          <div class="cov-casino-stats">${c.machines.length} / ${total} 台</div>
+          <div class="cov-casino-bar-wrap">
+            <div class="cov-casino-bar"><div class="cov-casino-fill" style="width:${cp}%;background:${cc}"></div></div>
+            <span class="cov-casino-pct" style="color:${cc}">${cp}%</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    html += `
+      <div class="cov-region-block">
+        <div class="cov-region-header" onclick="toggleRegion('${blockId}')">
+          <div class="cov-region-left">
+            <div class="cov-region-name">${regionName}</div>
+            <div class="cov-region-stats">${r.ourTotal} / ${r.casinoTotal} 台 · ${r.casinos.length} 間賭場</div>
+            <div class="cov-region-bar-wrap">
+              <div class="cov-region-bar"><div class="cov-region-fill" style="width:${pct}%;background:${color}"></div></div>
+              <span class="cov-region-pct" style="color:${color}">${pct}%</span>
+            </div>
+          </div>
+          <div class="cov-region-chevron" id="${blockId}-chevron">▶</div>
+        </div>
+        <div class="cov-casino-list" id="${blockId}-list">
+          ${casinoRows}
+        </div>
+      </div>
+    `;
+  });
+
+  document.getElementById('machineCoverage').innerHTML = html;
+}
+
+function toggleRegion(blockId){
+  const list = document.getElementById(`${blockId}-list`);
+  const chev = document.getElementById(`${blockId}-chevron`);
+  const isOpen = list.classList.contains('open');
+  list.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+}
+
+// ═══════════════════════════════════════════════════════════
+// TAB: COVERAGE
+// ═══════════════════════════════════════════════════════════
+function renderCoverage(){
+  renderMachineCoverage();
+  const totalCasinos = CASINOS.length;
+
+  // Horizontal: 每款遊戲裝在幾間賭場
+  const gameCasinoCounts = {};
+  CASINOS.forEach(c=>{
+    getUniqueGames(c).forEach(g=>{
+      gameCasinoCounts[g] = (gameCasinoCounts[g]||new Set());
+      gameCasinoCounts[g].add(c.id);
+    });
+  });
+
+  const hSorted = Object.entries(gameCasinoCounts)
+    .map(([g,s])=>({g, count:s.size}))
+    .sort((a,b)=>b.count-a.count);
+
+  document.getElementById('coverageHorizontal').innerHTML = hSorted.map(({g,count})=>{
+    const game = GAMES[g];
+    const pct = Math.round(count/totalCasinos*100);
+    // which casinos are missing this game
+    const missing = CASINOS.filter(c=>!getUniqueGames(c).includes(g)).map(c=>c.name);
+    return `
+      <div class="game-coverage-row">
+        <div class="gcr-name">${game.name}</div>
+        <div class="gcr-type">${game.label}</div>
+        <div class="gcr-bar"><div class="gcr-fill" style="width:${pct}%"></div></div>
+        <div class="gcr-count">${count}/${totalCasinos}</div>
+        <div class="gcr-missing" title="${missing.join(', ')}" style="cursor:pointer;text-decoration:underline dotted">${missing.length>0?`${missing.length}間未裝`:'全部覆蓋'}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Vertical: 每款遊戲的平均營收（跨所有安裝它的賭場）
+  const gameRevs = {};
+  CASINOS.forEach(c=>{
+    c.machines.forEach(m=>{
+      if(!gameRevs[m.game]) gameRevs[m.game]=[];
+      gameRevs[m.game].push(m.rev);
+    });
+  });
+
+  const allAvgs = Object.values(gameRevs).map(revs=>revs.reduce((s,v)=>s+v,0)/revs.length);
+  const globalAvg = allAvgs.reduce((s,v)=>s+v,0)/allAvgs.length;
+  const maxAvg = Math.max(...allAvgs);
+
+  const vSorted = Object.entries(gameRevs)
+    .map(([g,revs])=>({g, avg:Math.round(revs.reduce((s,v)=>s+v,0)/revs.length)}))
+    .sort((a,b)=>b.avg-a.avg);
+
+  document.getElementById('coverageVertical').innerHTML = vSorted.map(({g,avg})=>{
+    const game = GAMES[g];
+    const pupd = Math.round(avg/30);
+    const pct = Math.round(avg/maxAvg*100);
+    const ratio = avg/globalAvg;
+    const color = ratio>=1.2?'var(--accent3)':ratio>=0.9?'var(--accent)':ratio>=0.7?'var(--warn)':'var(--danger)';
+    const trend = ratio>=1.2?'▲ 強':ratio>=0.9?'— 平':ratio>=0.7?'▼ 偏低':'▼▼ 弱';
+    return `
+      <div class="game-perf-row">
+        <div class="gpr-name">${game.name} <span style="font-size:9px;color:var(--text3)">${game.label}</span></div>
+        <div class="gpr-bar"><div class="gpr-fill" style="width:${pct}%;background:${color}"></div></div>
+        <div class="gpr-val" style="color:${color}">${pupd.toLocaleString()}<span style="font-size:9px;color:var(--text3)"> /日</span></div>
+        <div class="gpr-trend" style="color:${color};font-family:var(--mono);font-size:9px;">${trend}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Gap panel: 選表現最好的遊戲，列出哪些賭場還沒裝
+  const topGames = vSorted.slice(0,5);
+  document.getElementById('gapPanel').innerHTML = topGames.map(({g})=>{
+    const game = GAMES[g];
+    const missingCasinos = CASINOS.filter(c=>!getUniqueGames(c).includes(g));
+    if(missingCasinos.length===0) return `
+      <div style="padding:10px 0;border-bottom:1px solid rgba(31,47,74,.5);display:flex;gap:12px;align-items:center;">
+        <span class="tag ${game.type}">${game.name}</span>
+        <span style="font-size:12px;color:var(--accent3)">✓ 所有賭場已安裝</span>
+      </div>
+    `;
+    return `
+      <div style="padding:10px 0;border-bottom:1px solid rgba(31,47,74,.5);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span class="tag ${game.type}">${game.name}</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--text2);">尚有 ${missingCasinos.length} 間未安裝</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          ${missingCasinos.map(c=>`<span style="font-family:var(--mono);font-size:10px;padding:3px 8px;border:1px solid var(--border);color:var(--text2);">${c.name}</span>`).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// TAB: SUGGESTIONS
+// ═══════════════════════════════════════════════════════════
+function renderSuggestions(){
+  const grid = document.getElementById('suggestionGrid');
+  grid.innerHTML='';
+
+  CASINOS.forEach((c,i)=>{
+    // group machines by game
+    const byGame = {};
+    c.machines.forEach(m=>{
+      if(!byGame[m.game]) byGame[m.game]=[];
+      byGame[m.game].push(m);
+    });
+
+    // overall casino perf
+    const ar = avgRev(c.machines);
+    const overallCls = perfClass(ar, c.casinoAvg);
+    const cardClass = overallCls==='critical'?'urgent':overallCls==='low'?'warn':'good';
+
+    const gameRows = Object.entries(byGame).map(([g,ms])=>{
+      const gameAvg = Math.round(ms.reduce((s,m)=>s+m.rev,0)/ms.length);
+      const cls = perfClass(gameAvg, c.casinoAvg);
+      const action = cls==='critical'?'REPLACE':cls==='low'?'MONITOR':'KEEP';
+      const actionClass = cls==='critical'?'replace':cls==='low'?'monitor':'keep';
+      return `
+        <div class="sugg-item">
+          <div class="sugg-game">
+            <span class="tag ${GAMES[g].type}" style="margin-right:6px">${GAMES[g].name}</span>
+            <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">${ms.length}台 · avg ${fmtRev(gameAvg)}</span>
+          </div>
+          <span class="sugg-action ${actionClass}">${action}</span>
+        </div>
+      `;
+    }).join('');
+
+    const div = document.createElement('div');
+    div.className=`sugg-card ${cardClass}`;
+    div.style.animationDelay=(i*.04)+'s';
+    div.innerHTML=`
+      <div class="sugg-header">
+        <div>
+          <div class="sugg-casino">${c.name}</div>
+          <div class="sugg-region">${c.region}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="sugg-machines">${c.machines.length}<span> 台</span></div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text3)">基準 ${fmtRev(c.casinoAvg)}</div>
+        </div>
+      </div>
+      <div class="sugg-body">${gameRows}</div>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// TAB SWITCH
+// ═══════════════════════════════════════════════════════════
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.view-section').forEach(s=>s.classList.remove('active'));
+
+  const tabs = {overview:0, coverage:1, suggestions:2};
+  document.querySelectorAll('.tab')[tabs[name]].classList.add('active');
+  document.getElementById(`tab-${name}`).classList.add('active');
+
+  if(name==='coverage') renderCoverage();
+  if(name==='suggestions') renderSuggestions();
+}
+
+// ═══════════════════════════════════════════════════════════
+// EXPORT
+// ═══════════════════════════════════════════════════════════
+function exportCSV(){
+  const rows = [['賭場','地區','機台編號','遊戲','營收/月','賭場基準','與基準比','表現']];
+  CASINOS.forEach(c=>{
+    c.machines.forEach(m=>{
+      const cls = perfClass(m.rev, c.casinoAvg);
+      const pct = Math.round(m.rev/c.casinoAvg*100)-100;
+      rows.push([
+        c.name, c.region, m.id, GAMES[m.game].name,
+        m.rev, c.casinoAvg,
+        (pct>=0?'+':'')+pct+'%',
+        {high:'優良',mid:'正常',low:'偏低',critical:'危險'}[cls]
+      ]);
+    });
+  });
+  const csv = rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`機台策略報表_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  showToast('CSV 報表已匯出（含所有機台明細）');
+}
+
+// ═══════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ═══════════════════════════════════════════════════════════
+// CSV IMPORT
+// ═══════════════════════════════════════════════════════════
+function openImport(){
+  document.getElementById('importModal').classList.add('open');
+  document.getElementById('importStatus').className='import-status';
+  document.getElementById('csvFileInput').value='';
+}
+function closeImport(){ document.getElementById('importModal').classList.remove('open'); }
+
+// Drag-and-drop
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+dz.addEventListener('drop',e=>{
+  e.preventDefault(); dz.classList.remove('drag');
+  const f=e.dataTransfer.files[0];
+  if(f) handleFileSelect(f);
+});
+
+function handleFileSelect(file){
+  if(!file||!file.name.endsWith('.csv')){
+    showImportStatus('err','請選擇 .csv 格式的檔案');
+    return;
+  }
+  const reader=new FileReader();
+  reader.onload=e=>{
+    // Try UTF-8 first, then latin1 for BIG5
+    parseAndLoadCSV(e.target.result, file.name);
+  };
+  reader.readAsText(file,'UTF-8');
+}
+
+function parseAndLoadCSV(text, filename){
+  const lines = text.trim().split('\n').filter(l=>l.trim());
+  if(lines.length < 2){
+    showImportStatus('err','CSV 內容不足，請確認格式正確');
+    return;
+  }
+
+  // Remove BOM if present
+  const cleanFirst = lines[0].replace(/^\uFEFF/,'');
+  lines[0] = cleanFirst;
+
+  // Parse header — accept both English and Chinese column names
+  const header = parseCSVLine(lines[0]).map(h=>h.trim().toLowerCase());
+  // Column index map (flexible matching)
+  const COL = {
+    casino:   findCol(header,['賭場名稱','casino','casino_name','name']),
+    region:   findCol(header,['地區','region']),
+    machineId:findCol(header,['機台編號','machine_id','machineid','id']),
+    game:     findCol(header,['遊戲名稱','game','game_name','gamename']),
+    gameType: findCol(header,['遊戲類型','game_type','gametype','type']),
+    rev:      findCol(header,['月營收','monthly_rev','monthly_revenue','rev','revenue']),
+    avg:      findCol(header,['賭場基準月營收','casino_avg','casinoavg','avg','benchmark']),
+    total:    findCol(header,['賭場總機台數','total_machines','totalmachines','total']),
+  };
+
+  const required=['casino','region','game','rev','avg'];
+  const missing=required.filter(k=>COL[k]===-1);
+  if(missing.length>0){
+    showImportStatus('err',`找不到必要欄位，請確認 CSV 包含：賭場名稱、地區、遊戲名稱、月營收、賭場基準月營收`);
+    return;
+  }
+
+  // Build CASINOS structure
+  const casinoMap={};
+  let rowErrors=0;
+
+  for(let i=1;i<lines.length;i++){
+    const cols=parseCSVLine(lines[i]);
+    if(cols.length<3) continue;
+
+    const casinoName=(cols[COL.casino]||'').trim();
+    const region=(cols[COL.region]||'').trim();
+    const machineId=COL.machineId>-1?(cols[COL.machineId]||`M${i}`).trim():`M${i}`;
+    const gameName=(cols[COL.game]||'').trim();
+    const gameType=COL.gameType>-1?(cols[COL.gameType]||'slots').trim():'slots';
+    const rev=parseFloat((cols[COL.rev]||'0').replace(/,/g,''));
+    const avg=parseFloat((cols[COL.avg]||'0').replace(/,/g,''));
+    const total=COL.total>-1?parseInt((cols[COL.total]||'0').replace(/,/g,''),10):0;
+
+    if(!casinoName||!gameName||isNaN(rev)||isNaN(avg)){rowErrors++;continue;}
+
+    if(!casinoMap[casinoName]){
+      casinoMap[casinoName]={
+        id: Object.keys(casinoMap).length+1,
+        name: casinoName,
+        region: region,
+        casinoAvg: avg,
+        totalMachines: total||0,
+        machines:[],
+        _gameTypes:{}
+      };
+    }
+    const c=casinoMap[casinoName];
+    if(avg>0) c.casinoAvg=avg; // use last seen avg for this casino
+    if(total>0) c.totalMachines=total;
+    c._gameTypes[gameName]=gameType;
+    c.machines.push({id:machineId, game:gameName, rev:rev});
+  }
+
+  const newCasinos=Object.values(casinoMap);
+  if(newCasinos.length===0){
+    showImportStatus('err','沒有成功讀取任何資料，請確認欄位格式');
+    return;
+  }
+
+  // Rebuild GAMES from imported data
+  const newGames={};
+  newCasinos.forEach(c=>{
+    c.machines.forEach(m=>{
+      if(!newGames[m.game]){
+        const gt=c._gameTypes[m.game]||'slots';
+        const typeLabels={slots:'老虎機',table:'桌牌',fish:'魚機',other:'其他'};
+        newGames[m.game]={name:m.game,type:gt,label:typeLabels[gt]||'其他'};
+      }
+      // Convert game name → id (use name as key directly)
+    });
+  });
+
+  // Patch machines to use game name as id (our GAMES map uses string keys)
+  // Already done — game field = game name string
+
+  // Replace global data
+  Object.keys(GAMES).forEach(k=>delete GAMES[k]);
+  Object.assign(GAMES,newGames);
+
+  CASINOS.length=0;
+  newCasinos.forEach(c=>{
+    // totalMachines for CASINO_TOTAL
+    CASINO_TOTAL[c.id]=c.totalMachines||c.machines.length;
+    CASINOS.push({
+      id:c.id, name:c.name, region:c.region,
+      casinoAvg:c.casinoAvg, machines:c.machines
+    });
+  });
+
+  // Update KPIs
+  const totalM=newCasinos.reduce((s,c)=>s+c.machines.length,0);
+  document.querySelector('.kpi-card.c1 .kpi-value').textContent=newCasinos.length;
+  document.querySelector('.kpi-card.c2 .kpi-value').textContent=totalM;
+  const gameCount=Object.keys(newGames).length;
+  document.querySelector('.kpi-card.c3 .kpi-value').textContent=gameCount;
+  updateKPIs();
+
+  // Update date label
+  const now=new Date();
+  document.getElementById('dataDateLabel').textContent=
+    `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} 已更新`;
+
+  // Update region filter options
+  const regions=[...new Set(newCasinos.map(c=>c.region))];
+  const sel=document.getElementById('filterRegion');
+  sel.innerHTML='<option value="">所有地區</option>';
+  regions.forEach(r=>{
+    const o=document.createElement('option');
+    o.value=r; o.textContent=r;
+    sel.appendChild(o);
+  });
+
+  const msg=`✓ 成功匯入 ${newCasinos.length} 間賭場、${totalM} 台機台${rowErrors>0?`（${rowErrors} 列格式錯誤已略過）`:''}`;
+  showImportStatus('ok',msg);
+
+  // Re-render all
+  renderOverview();
+  showToast(`資料已更新！${newCasinos.length} 間賭場、${totalM} 台機台`);
+
+  setTimeout(()=>closeImport(), 1800);
+}
+
+function findCol(header, candidates){
+  for(const c of candidates){
+    const i=header.indexOf(c.toLowerCase());
+    if(i>-1) return i;
+  }
+  return -1;
+}
+
+function parseCSVLine(line){
+  const result=[];
+  let cur='', inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"'){ inQ=!inQ; }
+    else if(ch===','&&!inQ){ result.push(cur); cur=''; }
+    else{ cur+=ch; }
+  }
+  result.push(cur);
+  return result.map(s=>s.trim().replace(/^"|"$/g,''));
+}
+
+function showImportStatus(type,msg){
+  const el=document.getElementById('importStatus');
+  el.className='import-status '+type;
+  el.textContent=msg;
+}
+
+function downloadTemplate(){
+  const header='賭場名稱,地區,機台編號,遊戲名稱,遊戲類型,月營收,賭場基準月營收,賭場總機台數';
+  const rows=[
+    '金沙皇宮,澳門,M001,黃金龍,slots,102000,85000,60',
+    '金沙皇宮,澳門,M002,黃金龍,slots,78000,85000,60',
+    '金沙皇宮,澳門,M003,百家樂,table,120000,85000,60',
+    '澳博娛樂場,澳門,M101,招財貓,slots,88000,72000,45',
+    '澳博娛樂場,澳門,M102,龍虎鬥,table,95000,72000,45',
+  ];
+  const csv='\uFEFF'+[header,...rows].join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='機台資料範本.csv';
+  a.click();
+  showToast('範本 CSV 已下載');
+}
+
+// ═══════════════════════════════════════════════════════════
+// PASSWORD SYSTEM
+// ═══════════════════════════════════════════════════════════
+// 兩組密碼：
+//   一般密碼 → 所有同事使用，用來進入系統
+//   管理員密碼 → 只有管理者知道，才能變更一般密碼
+//
+// 密碼存在瀏覽器 localStorage（每個裝置獨立）
+const PW_KEY      = 'slt_pw_hash';
+const ADMIN_KEY   = 'slt_admin_hash';
+const PW_TOKEN    = 'slt_auth_token';
+const PW_EXP      = 'slt_auth_exp';
+const DEFAULT_PW    = 'jumbo.net';   // ← 預設一般密碼
+const DEFAULT_ADMIN = 'jumbo.admin';   // ← 預設管理員密碼
+
+function hashPw(pw){
+  let h = 0x811c9dc5;
+  for(let i=0;i<pw.length;i++){
+    h ^= pw.charCodeAt(i);
+    h = (h * 0x01000193) >>> 0;
+  }
+  return h.toString(16).padStart(8,'0');
+}
+
+function getViewerHash(){ return localStorage.getItem(PW_KEY)   || hashPw(DEFAULT_PW); }
+function getAdminHash(){  return localStorage.getItem(ADMIN_KEY) || hashPw(DEFAULT_ADMIN); }
+
+function isAuthenticated(){
+  const token = localStorage.getItem(PW_TOKEN);
+  const exp   = parseInt(localStorage.getItem(PW_EXP)||'0',10);
+  if(!token || Date.now() > exp) return false;
+  return token === getViewerHash();
+}
+
+function authenticate(remember){
+  const hash = getViewerHash();
+  localStorage.setItem(PW_TOKEN, hash);
+  const exp = remember
+    ? Date.now() + 7*24*60*60*1000
+    : new Date().setHours(23,59,59,999);
+  localStorage.setItem(PW_EXP, exp.toString());
+}
+
+// ── Login flow ──
+function submitPw(){
+  const input    = document.getElementById('pwInput').value;
+  const remember = document.getElementById('pwRemember').checked;
+  const errEl    = document.getElementById('pwError');
+
+  if(!input){ errEl.textContent='⚠ 請輸入密碼'; return; }
+
+  if(hashPw(input) === getViewerHash()){
+    authenticate(remember);
+    document.getElementById('pwScreen').style.display='none';
+    document.getElementById('mainApp').style.display='block';
+    errEl.textContent='';
+  } else {
+    errEl.textContent='✕ 密碼錯誤，請再試一次';
+    const box = document.getElementById('pwBox');
+    box.classList.remove('pw-shake');
+    void box.offsetWidth;
+    box.classList.add('pw-shake');
+    document.getElementById('pwInput').value='';
+    document.getElementById('pwInput').focus();
+  }
+}
+
+function togglePwVis(){
+  const inp = document.getElementById('pwInput');
+  const btn = document.getElementById('pwToggle');
+  if(inp.type==='password'){ inp.type='text'; btn.textContent='🙈'; }
+  else { inp.type='password'; btn.textContent='👁'; }
+}
+
+// ── Change password (admin only) ──
+// chpwModal now has 3 fields: admin password / new viewer password / confirm
+function openChpw(){
+  ['chpwAdmin','chpwNew','chpwConfirm'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('chpwErr').textContent='';
+  document.getElementById('chpwModal').classList.add('open');
+  setTimeout(()=>document.getElementById('chpwAdmin').focus(),100);
+}
+function closeChpw(){ document.getElementById('chpwModal').classList.remove('open'); }
+
+function submitChpw(){
+  const admin = document.getElementById('chpwAdmin').value;
+  const nw    = document.getElementById('chpwNew').value;
+  const conf  = document.getElementById('chpwConfirm').value;
+  const err   = document.getElementById('chpwErr');
+
+  if(hashPw(admin) !== getAdminHash()){ err.textContent='✕ 管理員密碼不正確'; return; }
+  if(nw.length < 4){ err.textContent='新密碼至少需要 4 個字元'; return; }
+  if(nw !== conf){ err.textContent='兩次輸入的新密碼不一致'; return; }
+  if(nw === admin){ err.textContent='一般密碼不能和管理員密碼相同'; return; }
+
+  localStorage.setItem(PW_KEY, hashPw(nw));
+  // Re-auth current session with new viewer password
+  authenticate(true);
+  closeChpw();
+  showToast('✓ 一般密碼已變更，請通知同事更新');
+}
+
+// ── Init: check auth on load ──
+(function initAuth(){
+  if(isAuthenticated()){
+    document.getElementById('pwScreen').style.display='none';
+    document.getElementById('mainApp').style.display='block';
+  } else {
+    setTimeout(()=>document.getElementById('pwInput').focus(), 100);
+  }
+})();
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+updateKPIs();
+renderOverview();
+</script>
+</body>
+</html>
