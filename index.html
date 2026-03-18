@@ -1962,23 +1962,13 @@ document.getElementById('addGameBtn').addEventListener('click',()=>{
 
 async function saveToGitHub(){
   const token = getGHToken();
-  if(!token){
-    showToast('⚠ 請先在後台設定 GitHub Token');
-    return false;
-  }
-  // Update button state
-  const btn = document.getElementById('saveGitHubBtn');
-  if(btn){ btn.textContent='⏳ 儲存中…'; btn.disabled=true; }
+  if(!token){ showToast('⚠ 請先在後台設定 GitHub Token'); return false; }
   const now = new Date().toISOString().slice(0,10);
   const json = {
     meta:{ lastUpdated: now, updatedBy:'admin' },
-    games: GAMES,
-    casinoTotal: CASINO_TOTAL,
-    casinos: CASINOS
+    games: GAMES, casinoTotal: CASINO_TOTAL, casinos: CASINOS
   };
-  const ok = await saveDataToGitHub(json);
-  if(btn){ btn.textContent='💾 儲存並更新至 GitHub'; btn.disabled=false; }
-  return ok;
+  return await saveDataToGitHub(json);
 }
 
 // 有 Token 就自動存，沒有就只顯示成功訊息
