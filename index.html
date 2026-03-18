@@ -1948,10 +1948,15 @@ async function autoSave(successMsg){
   const btn = document.getElementById('saveGitHubBtn');
   if(btn){ btn.textContent='⏳ 同步中…'; btn.disabled=true; }
   try {
-    const ok = await saveToGitHub();
+    const now = new Date().toISOString().slice(0,10);
+    const json = {
+      meta:{ lastUpdated: now, updatedBy:'admin' },
+      games: GAMES,
+      casinoTotal: CASINO_TOTAL,
+      casinos: CASINOS
+    };
+    const ok = await saveDataToGitHub(json);
     if(btn){ btn.textContent='💾 儲存並更新至 GitHub'; btn.disabled=false; }
-    if(ok) showToast('✓ 已同步至 GitHub');
-    else showToast('⚠ 同步失敗，請按 💾 手動重試');
   } catch(e) {
     if(btn){ btn.textContent='💾 儲存並更新至 GitHub'; btn.disabled=false; }
     showToast('⚠ 同步錯誤：' + e.message);
