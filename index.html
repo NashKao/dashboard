@@ -1771,11 +1771,13 @@ function renderGameList(){
       </div>`;
   }).join('');
 
-  el.querySelectorAll('.game-rename-btn').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const orig=btn.dataset.orig;
-      const inp=el.querySelector(`.game-name-edit[data-orig="${orig}"]`);
-      const newName=inp.value.trim();
+  // Event delegation - 避免重複綁定問題
+  el.onclick = (e) => {
+    const renameBtn = e.target.closest('.game-rename-btn');
+    if(renameBtn){
+      const orig = renameBtn.dataset.orig;
+      const inp  = el.querySelector(`.game-name-edit[data-orig="${orig}"]`);
+      const newName = inp.value.trim();
       if(!newName||newName===orig){ showToast('⚠ 名稱未變更'); return; }
       if(GAMES[newName]){ showToast('⚠ 此遊戲名稱已存在'); return; }
       GAMES[newName]={...GAMES[orig],name:newName};
@@ -1783,14 +1785,13 @@ function renderGameList(){
       _gameColorCache[newName]=_gameColorCache[orig];
       delete _gameColorCache[orig];
       CASINOS.forEach(c=>c.machines.forEach(m=>{ if(m.game===orig) m.game=newName; }));
-      autoSave(`✓ 已將「${orig}」改名為「${newName}」`);
       populateAdminDropdowns(); renderGameList(); renderOverview();
-    });
-  });
-
-  el.querySelectorAll('.game-delete-btn').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const g=btn.dataset.game;
+      autoSave(`✓ 已將「${orig}」改名為「${newName}」`);
+      return;
+    }
+    const deleteBtn = e.target.closest('.game-delete-btn');
+    if(deleteBtn){
+      const g=deleteBtn.dataset.game;
       const usedIn=CASINOS.filter(c=>c.machines.some(m=>m.game===g)).length;
       const total=CASINOS.reduce((s,c)=>s+c.machines.filter(m=>m.game===g).length,0);
       const msg=usedIn>0
@@ -1799,11 +1800,12 @@ function renderGameList(){
       showConfirm(msg,()=>{
         CASINOS.forEach(c=>{ c.machines=c.machines.filter(m=>m.game!==g); });
         delete GAMES[g]; delete _gameColorCache[g];
-        autoSave(`✓ 已刪除遊戲 ${g}`);
         populateAdminDropdowns(); renderGameList(); renderOverview();
+        autoSave(`✓ 已刪除遊戲 ${g}`);
       });
-    });
-  });
+      return;
+    }
+  };
 }
 
 function updatePupdPreview(){
@@ -1934,7 +1936,8 @@ async function saveToGitHub(){
 // 有 Token 就自動存，沒有就只顯示成功訊息
 async function autoSave(successMsg){
   showToast(successMsg);
-  if(!getGHToken()){
+  const token = getGHToken();
+  if(!token){
     setTimeout(()=>{
       document.getElementById('tokenSetupInput').value='';
       document.getElementById('tokenSetupOverlay').style.display='flex';
@@ -1944,9 +1947,15 @@ async function autoSave(successMsg){
   }
   const btn = document.getElementById('saveGitHubBtn');
   if(btn){ btn.textContent='⏳ 同步中…'; btn.disabled=true; }
-  const ok = await saveToGitHub();
-  if(btn){ btn.textContent='💾 儲存並更新至 GitHub'; btn.disabled=false; }
-  if(ok) showToast('✓ 已同步至 GitHub');
+  try {
+    const ok = await saveToGitHub();
+    if(btn){ btn.textContent='💾 儲存並更新至 GitHub'; btn.disabled=false; }
+    if(ok) showToast('✓ 已同步至 GitHub');
+    else showToast('⚠ 同步失敗，請按 💾 手動重試');
+  } catch(e) {
+    if(btn){ btn.textContent='💾 儲存並更新至 GitHub'; btn.disabled=false; }
+    showToast('⚠ 同步錯誤：' + e.message);
+  }
 }
 
 document.getElementById('saveGitHubBtn').addEventListener('click', async ()=>{
