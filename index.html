@@ -1620,7 +1620,12 @@ function openAdmin(){
   document.querySelectorAll('[id^="adminTab-"]').forEach(t=>t.style.display='none');
   document.getElementById('adminTab-overview').style.display='block';
 }
-function closeAdmin(){ document.getElementById('adminModal').style.display='none'; }
+function closeAdmin(){
+  document.getElementById('adminModal').style.display='none';
+  renderOverview();
+  if(document.getElementById('view-coverage')?.classList.contains('active')) renderCoverage();
+  if(document.getElementById('view-suggestions')?.classList.contains('active')) renderSuggestions();
+}
 
 function populateAdminDropdowns(){
   const casinoOpts=CASINOS.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
@@ -2012,6 +2017,7 @@ document.getElementById('saveGitHubBtn').addEventListener('click', async ()=>{
   const ok = await saveToGitHub();
   btn.textContent = '💾 儲存並更新至 GitHub';
   btn.disabled = false;
+  if(ok){ renderOverview(); renderCoverage(); }
 });
 
 // ── Init ──
