@@ -876,18 +876,66 @@ function showConfirm(msg, onYes){
   no.onclick  = ()=>{ close(); };
 }
 
+const LS_KEY = 'slt_data';
+
+function saveToLocalStorage(){
+  const json = {
+    meta:{ lastUpdated: new Date().toISOString().slice(0,10), updatedBy:'admin' },
+    games: GAMES,
+    casinoTotal: CASINO_TOTAL,
+    casinos: CASINOS
+  };
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(json)); } catch(e){ console.warn('localStorage 儲存失敗', e); }
+}
+
+function loadFromLocalStorage(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(raw) return JSON.parse(raw);
+  } catch(e){ console.warn('localStorage 讀取失敗', e); }
+  return null;
+}
+
 async function loadData(){
+  // 優先用 localStorage（即時），再嘗試 GitHub（最新備份）
+  const local = loadFromLocalStorage();
+  if(local){
+    applyData(local);
+    console.log('✓ 資料從 localStorage 載入');
+    // 背景同步 GitHub 最新（靜默）
+    syncFromGitHub();
+  } else {
+    // 第一次開啟，從 GitHub 或內建資料載入
+    try {
+      const url = `https://raw.githubusercontent.com/${GH_REPO}/${GH_BRANCH}/${GH_FILE}?t=${Date.now()}`;
+      const res = await fetch(url);
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      const json = await res.json();
+      applyData(json);
+      saveToLocalStorage();
+      console.log('✓ 資料從 GitHub 載入');
+    } catch(e) {
+      console.warn('GitHub 載入失敗，使用內建資料:', e.message);
+      applyData(FALLBACK_DATA);
+    }
+  }
+}
+
+async function syncFromGitHub(){
+  // 背景靜默同步，只在 GitHub 有更新時才覆蓋 localStorage
   try {
     const url = `https://raw.githubusercontent.com/${GH_REPO}/${GH_BRANCH}/${GH_FILE}?t=${Date.now()}`;
     const res = await fetch(url);
-    if(!res.ok) throw new Error('HTTP ' + res.status);
+    if(!res.ok) return;
     const json = await res.json();
-    applyData(json);
-    console.log('✓ 資料從 GitHub 載入成功');
-  } catch(e) {
-    console.warn('GitHub 載入失敗，使用內建資料:', e.message);
-    applyData(FALLBACK_DATA);
-  }
+    const local = loadFromLocalStorage();
+    // 只有 GitHub 版本較新時才覆蓋
+    if(!local || (json.meta?.lastUpdated > (local.meta?.lastUpdated||''))){
+      applyData(json);
+      saveToLocalStorage();
+      console.log('✓ 背景同步 GitHub 資料（較新版本）');
+    }
+  } catch(e){ /* 靜默失敗 */ }
 }
 
 function applyData(json){
@@ -1936,6 +1984,8 @@ async function saveToGitHub(){
 // 有 Token 就自動存，沒有就只顯示成功訊息
 async function autoSave(successMsg){
   showToast(successMsg);
+  // 立刻存到 localStorage（馬上生效）
+  saveToLocalStorage();
   const token = getGHToken();
   if(!token){
     setTimeout(()=>{
@@ -1945,6 +1995,7 @@ async function autoSave(successMsg){
     }, 800);
     return;
   }
+  // 背景同步到 GitHub
   const btn = document.getElementById('saveGitHubBtn');
   if(btn){ btn.textContent='⏳ 同步中…'; btn.disabled=true; }
   try {
@@ -1955,11 +2006,11 @@ async function autoSave(successMsg){
       casinoTotal: CASINO_TOTAL,
       casinos: CASINOS
     };
-    const ok = await saveDataToGitHub(json);
+    await saveDataToGitHub(json);
     if(btn){ btn.textContent='💾 儲存並更新至 GitHub'; btn.disabled=false; }
   } catch(e) {
     if(btn){ btn.textContent='💾 儲存並更新至 GitHub'; btn.disabled=false; }
-    showToast('⚠ 同步錯誤：' + e.message);
+    showToast('⚠ GitHub 同步失敗，資料已存本機');
   }
 }
 
@@ -1967,6 +2018,7 @@ document.getElementById('saveGitHubBtn').addEventListener('click', async ()=>{
   const btn = document.getElementById('saveGitHubBtn');
   btn.textContent = '⏳ 儲存中…';
   btn.disabled = true;
+  saveToLocalStorage();
   const ok = await saveToGitHub();
   btn.textContent = '💾 儲存並更新至 GitHub';
   btn.disabled = false;
