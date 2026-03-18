@@ -715,7 +715,11 @@ input[type='date']::-webkit-calendar-picker-indicator{
   <div class="modal" style="max-width:720px;width:100%">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
       <h2 style="font-family:var(--mono);font-size:16px;letter-spacing:2px;">⚙ 後台管理</h2>
-      <button id="closeAdminBtn" style="background:transparent;border:none;color:var(--text2);font-size:20px;cursor:pointer;">✕</button>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button id="saveGitHubBtn" class="btn" style="background:rgba(0,255,157,.1);border-color:var(--accent3);color:var(--accent3);font-size:11px;padding:6px 12px;">💾 儲存至 GitHub</button>
+        <button id="resetTokenBtn" style="background:transparent;border:1px solid var(--border);color:var(--text3);padding:6px 10px;font-family:var(--mono);font-size:13px;cursor:pointer;" title="設定 GitHub Token">🔑</button>
+        <button id="closeAdminBtn" style="background:transparent;border:none;color:var(--text2);font-size:20px;cursor:pointer;">✕</button>
+      </div>
     </div>
 
     <!-- Tabs -->
@@ -782,11 +786,6 @@ input[type='date']::-webkit-calendar-picker-indicator{
 
     </div>
 
-    <!-- 儲存至 GitHub -->
-    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;">
-      <button id="saveGitHubBtn" class="btn" style="flex:1;justify-content:center;background:rgba(0,255,157,.1);border-color:var(--accent3);color:var(--accent3);">💾 儲存並更新至 GitHub</button>
-      <button id="resetTokenBtn" style="background:transparent;border:1px solid var(--border);color:var(--text3);padding:6px 10px;font-family:var(--mono);font-size:11px;cursor:pointer;" title="重設 GitHub Token">🔑</button>
-    </div>
   </div>
 </div>
 
@@ -1659,7 +1658,6 @@ function renderAdminOverview(){
       });
       autoSave(`✓ ${casino.name} 已更新`);
       renderOverview();
-      autoSave();
       return;
     }
     const delBtn=e.target.closest('.overview-delete-btn');
@@ -1738,7 +1736,6 @@ function renderCasinoSettings(){
       autoSave(`✓ ${casino.name} 設定已套用`);
       renderCasinoSettings();
       renderOverview();
-      autoSave();
     });
   });
 }
@@ -1788,7 +1785,6 @@ function renderGameList(){
       CASINOS.forEach(c=>c.machines.forEach(m=>{ if(m.game===orig) m.game=newName; }));
       autoSave(`✓ 已將「${orig}」改名為「${newName}」`);
       populateAdminDropdowns(); renderGameList(); renderOverview();
-      autoSave();
     });
   });
 
@@ -1805,7 +1801,6 @@ function renderGameList(){
         delete GAMES[g]; delete _gameColorCache[g];
         autoSave(`✓ 已刪除遊戲 ${g}`);
         populateAdminDropdowns(); renderGameList(); renderOverview();
-      autoSave();
       });
     });
   });
@@ -1881,9 +1876,8 @@ document.getElementById('addCasinoBtn').addEventListener('click',()=>{
   const newId=Math.max(...CASINOS.map(c=>c.id),0)+1;
   CASINOS.push({id:newId,name,region,casinoAvg:avg,machines:[]});
   CASINO_TOTAL[newId]=total;
-  autoSave(`✓ 已新增賭場：${name}`);
   populateAdminDropdowns(); renderCasinoSettings(); renderAdminOverview(); renderOverview();
-      autoSave();
+  autoSave(`✓ 已新增賭場：${name}`);
   ['newCasinoName','newCasinoRegion','newCasinoAvg','newCasinoTotal'].forEach(id=>{ document.getElementById(id).value=''; });
 });
 document.getElementById('addMachineBtn').addEventListener('click',()=>{
@@ -1899,9 +1893,8 @@ document.getElementById('addMachineBtn').addEventListener('click',()=>{
   for(let i=0;i<count;i++){
     casino.machines.push({id:`${prefix}${String(base+i+1).padStart(3,'0')}`,game,rev:0,launchDate:date});
   }
-  autoSave(`✓ 已新增 ${casino.name} · ${game} · ${count}台`);
   renderOverview(); renderAdminOverview();
-      autoSave();
+  autoSave(`✓ 已新增 ${casino.name} · ${game} · ${count}台`);
   ['newMachCasino','newMachGame','newMachCount','newMachDate'].forEach(id=>{ document.getElementById(id).value=''; });
 });
 document.getElementById('addGameBtn').addEventListener('click',()=>{
@@ -1910,27 +1903,12 @@ document.getElementById('addGameBtn').addEventListener('click',()=>{
   if(GAMES[name]){ showToast('⚠ 此遊戲已存在'); return; }
   GAMES[name]={name,type:'slots',label:'老虎機'};
   gameColor(name);
-  autoSave(`✓ 已新增遊戲：${name}`);
   document.getElementById('newGameName').value='';
   populateAdminDropdowns(); renderGameList(); renderOverview();
-      autoSave();
+  autoSave(`✓ 已新增遊戲：${name}`);
 });
-// 自動儲存：有 Token 就存 GitHub，否則提示
-let _saveTimer = null;
-function autoSave(){
-  if(!getGHToken()){
-    // 沒有 Token，靜默略過（不打擾用戶）
-    return;
-  }
   // Debounce：500ms 內多次變更只存一次
-  clearTimeout(_saveTimer);
-  _saveTimer = setTimeout(async ()=>{
-    const btn = document.getElementById('saveGitHubBtn');
-    if(btn){ btn.textContent='⏳ 自動儲存中…'; btn.disabled=true; }
-    const ok = await saveToGitHub();
-    if(btn){ btn.textContent='💾 儲存並更新至 GitHub'; btn.disabled=false; }
-  }, 500);
-}
+
 
 async function saveToGitHub(){
   const token = getGHToken();
@@ -1956,13 +1934,19 @@ async function saveToGitHub(){
 // 有 Token 就自動存，沒有就只顯示成功訊息
 async function autoSave(successMsg){
   showToast(successMsg);
-  if(getGHToken()){
-    const btn = document.getElementById('saveGitHubBtn');
-    if(btn){ btn.textContent='⏳ 同步中…'; btn.disabled=true; }
-    const ok = await saveToGitHub();
-    if(btn){ btn.textContent='💾 儲存並更新至 GitHub'; btn.disabled=false; }
-    if(ok) showToast('✓ 已同步至 GitHub');
+  if(!getGHToken()){
+    setTimeout(()=>{
+      document.getElementById('tokenSetupInput').value='';
+      document.getElementById('tokenSetupOverlay').style.display='flex';
+      setTimeout(()=>document.getElementById('tokenSetupInput').focus(),100);
+    }, 800);
+    return;
   }
+  const btn = document.getElementById('saveGitHubBtn');
+  if(btn){ btn.textContent='⏳ 同步中…'; btn.disabled=true; }
+  const ok = await saveToGitHub();
+  if(btn){ btn.textContent='💾 儲存並更新至 GitHub'; btn.disabled=false; }
+  if(ok) showToast('✓ 已同步至 GitHub');
 }
 
 document.getElementById('saveGitHubBtn').addEventListener('click', async ()=>{
