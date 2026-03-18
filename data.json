@@ -1,259 +1,1271 @@
 {
   "meta": {
-    "lastUpdated": "2026-03-17",
-    "updatedBy": ""
+    "lastUpdated": "2026-03-18",
+    "updatedBy": "admin"
   },
   "games": {
-    "Long Jin Bao": {"name": "Long Jin Bao", "type": "slots", "label": "老虎機"},
-    "Man Fu Bao":   {"name": "Man Fu Bao",   "type": "slots", "label": "老虎機"},
-    "Man Yi Fa":    {"name": "Man Yi Fa",    "type": "slots", "label": "老虎機"},
-    "Long Yi Fa":   {"name": "Long Yi Fa",   "type": "slots", "label": "老虎機"},
-    "Bao Ni Fa":    {"name": "Bao Ni Fa",    "type": "slots", "label": "老虎機"}
+    "Long Jin Bao": {
+      "name": "Long Jin Bao",
+      "type": "slots",
+      "label": "老虎機"
+    },
+    "Man Fu Bao": {
+      "name": "Man Fu Bao",
+      "type": "slots",
+      "label": "老虎機"
+    },
+    "Man Yi Fa": {
+      "name": "Man Yi Fa",
+      "type": "slots",
+      "label": "老虎機"
+    },
+    "Long Yi Fa": {
+      "name": "Long Yi Fa",
+      "type": "slots",
+      "label": "老虎機"
+    },
+    "Bao Ni Fa": {
+      "name": "Bao Ni Fa",
+      "type": "slots",
+      "label": "老虎機"
+    },
+    "AAA": {
+      "name": "AAA",
+      "type": "slots",
+      "label": "老虎機"
+    }
   },
   "casinoTotal": {
-    "1": 2000, "2": 2000, "3": 2000,
-    "4": 1000, "5": 1000, "6": 1000,
-    "7": 1000, "8": 1000, "9": 1000, "10": 1000
+    "1": 2000,
+    "2": 2000,
+    "3": 2000,
+    "4": 1000,
+    "5": 1000,
+    "6": 1000,
+    "7": 1000,
+    "8": 1000,
+    "9": 1000,
+    "10": 1000
   },
   "casinos": [
     {
-      "id": 1, "name": "Solaire", "region": "菲律賓", "casinoAvg": 300000,
+      "id": 1,
+      "name": "Solaire",
+      "region": "菲律賓",
+      "casinoAvg": 300000,
       "machines": [
-        {"id": "S001", "game": "Long Jin Bao", "rev": 0,      "launchDate": "2025-11-04"},
-        {"id": "S002", "game": "Long Jin Bao", "rev": 0,      "launchDate": "2025-11-04"},
-        {"id": "S003", "game": "Long Jin Bao", "rev": 0,      "launchDate": "2025-11-04"},
-        {"id": "S004", "game": "Long Jin Bao", "rev": 0,      "launchDate": "2025-11-04"},
-        {"id": "S005", "game": "Long Jin Bao", "rev": 0,      "launchDate": "2025-11-04"},
-        {"id": "S006", "game": "Long Jin Bao", "rev": 0,      "launchDate": "2025-11-04"},
-        {"id": "S007", "game": "Long Jin Bao", "rev": 0,      "launchDate": "2025-11-04"},
-        {"id": "S008", "game": "Long Jin Bao", "rev": 0,      "launchDate": "2025-11-04"},
-        {"id": "S009", "game": "Long Jin Bao", "rev": 0,      "launchDate": "2025-11-04"},
-        {"id": "S010", "game": "Long Jin Bao", "rev": 0,      "launchDate": "2025-11-04"},
-        {"id": "S011", "game": "Man Fu Bao",   "rev": 645000, "launchDate": "2026-02-17"},
-        {"id": "S012", "game": "Man Fu Bao",   "rev": 645000, "launchDate": "2026-02-17"},
-        {"id": "S013", "game": "Man Fu Bao",   "rev": 645000, "launchDate": "2026-02-17"},
-        {"id": "S014", "game": "Man Fu Bao",   "rev": 645000, "launchDate": "2026-02-17"},
-        {"id": "S015", "game": "Man Fu Bao",   "rev": 645000, "launchDate": "2026-02-17"},
-        {"id": "S016", "game": "Man Fu Bao",   "rev": 645000, "launchDate": "2026-02-17"},
-        {"id": "S017", "game": "Man Fu Bao",   "rev": 645000, "launchDate": "2026-02-17"},
-        {"id": "S018", "game": "Man Fu Bao",   "rev": 645000, "launchDate": "2026-02-17"},
-        {"id": "S019", "game": "Man Fu Bao",   "rev": 645000, "launchDate": "2026-02-17"},
-        {"id": "S020", "game": "Man Fu Bao",   "rev": 645000, "launchDate": "2026-02-17"}
+        {
+          "id": "S001",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": "2025-11-04"
+        },
+        {
+          "id": "S002",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": "2025-11-04"
+        },
+        {
+          "id": "S003",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": "2025-11-04"
+        },
+        {
+          "id": "S004",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": "2025-11-04"
+        },
+        {
+          "id": "S005",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": "2025-11-04"
+        },
+        {
+          "id": "S006",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": "2025-11-04"
+        },
+        {
+          "id": "S007",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": "2025-11-04"
+        },
+        {
+          "id": "S008",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": "2025-11-04"
+        },
+        {
+          "id": "S009",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": "2025-11-04"
+        },
+        {
+          "id": "S010",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": "2025-11-04"
+        },
+        {
+          "id": "S011",
+          "game": "Man Fu Bao",
+          "rev": 645000,
+          "launchDate": "2026-02-17"
+        },
+        {
+          "id": "S012",
+          "game": "Man Fu Bao",
+          "rev": 645000,
+          "launchDate": "2026-02-17"
+        },
+        {
+          "id": "S013",
+          "game": "Man Fu Bao",
+          "rev": 645000,
+          "launchDate": "2026-02-17"
+        },
+        {
+          "id": "S014",
+          "game": "Man Fu Bao",
+          "rev": 645000,
+          "launchDate": "2026-02-17"
+        },
+        {
+          "id": "S015",
+          "game": "Man Fu Bao",
+          "rev": 645000,
+          "launchDate": "2026-02-17"
+        },
+        {
+          "id": "S016",
+          "game": "Man Fu Bao",
+          "rev": 645000,
+          "launchDate": "2026-02-17"
+        },
+        {
+          "id": "S017",
+          "game": "Man Fu Bao",
+          "rev": 645000,
+          "launchDate": "2026-02-17"
+        },
+        {
+          "id": "S018",
+          "game": "Man Fu Bao",
+          "rev": 645000,
+          "launchDate": "2026-02-17"
+        },
+        {
+          "id": "S019",
+          "game": "Man Fu Bao",
+          "rev": 645000,
+          "launchDate": "2026-02-17"
+        },
+        {
+          "id": "S020",
+          "game": "Man Fu Bao",
+          "rev": 645000,
+          "launchDate": "2026-02-17"
+        }
       ]
     },
     {
-      "id": 2, "name": "Solaire North", "region": "菲律賓", "casinoAvg": 200000,
+      "id": 2,
+      "name": "Solaire North",
+      "region": "菲律賓",
+      "casinoAvg": 200000,
       "machines": [
-        {"id": "SN001", "game": "Long Jin Bao", "rev": 169000, "launchDate": "2025-12-04"},
-        {"id": "SN002", "game": "Long Jin Bao", "rev": 169000, "launchDate": "2025-12-04"},
-        {"id": "SN003", "game": "Long Jin Bao", "rev": 169000, "launchDate": "2025-12-04"},
-        {"id": "SN004", "game": "Long Jin Bao", "rev": 169000, "launchDate": "2025-12-04"},
-        {"id": "SN005", "game": "Long Jin Bao", "rev": 169000, "launchDate": "2025-12-04"},
-        {"id": "SN006", "game": "Long Jin Bao", "rev": 169000, "launchDate": "2025-12-04"},
-        {"id": "SN007", "game": "Long Jin Bao", "rev": 169000, "launchDate": "2025-12-04"},
-        {"id": "SN008", "game": "Long Jin Bao", "rev": 169000, "launchDate": "2025-12-04"},
-        {"id": "SN009", "game": "Long Jin Bao", "rev": 169000, "launchDate": "2025-12-04"},
-        {"id": "SN010", "game": "Long Jin Bao", "rev": 169000, "launchDate": "2025-12-04"},
-        {"id": "SN011", "game": "Man Yi Fa",    "rev": 300000, "launchDate": "2025-12-04"},
-        {"id": "SN012", "game": "Man Yi Fa",    "rev": 300000, "launchDate": "2025-12-04"},
-        {"id": "SN013", "game": "Man Yi Fa",    "rev": 300000, "launchDate": "2025-12-04"},
-        {"id": "SN014", "game": "Man Yi Fa",    "rev": 300000, "launchDate": "2025-12-04"},
-        {"id": "SN015", "game": "Man Yi Fa",    "rev": 300000, "launchDate": "2025-12-04"},
-        {"id": "SN016", "game": "Man Yi Fa",    "rev": 300000, "launchDate": "2025-12-04"},
-        {"id": "SN017", "game": "Man Yi Fa",    "rev": 300000, "launchDate": "2025-12-04"},
-        {"id": "SN018", "game": "Man Yi Fa",    "rev": 300000, "launchDate": "2025-12-04"},
-        {"id": "SN019", "game": "Man Yi Fa",    "rev": 300000, "launchDate": "2025-12-04"},
-        {"id": "SN020", "game": "Man Yi Fa",    "rev": 300000, "launchDate": "2025-12-04"},
-        {"id": "SN021", "game": "Long Yi Fa",   "rev": 0,      "launchDate": null},
-        {"id": "SN022", "game": "Long Yi Fa",   "rev": 0,      "launchDate": null},
-        {"id": "SN023", "game": "Long Yi Fa",   "rev": 0,      "launchDate": null},
-        {"id": "SN024", "game": "Long Yi Fa",   "rev": 0,      "launchDate": null},
-        {"id": "SN025", "game": "Long Yi Fa",   "rev": 0,      "launchDate": null},
-        {"id": "SN026", "game": "Long Yi Fa",   "rev": 0,      "launchDate": null},
-        {"id": "SN027", "game": "Long Yi Fa",   "rev": 0,      "launchDate": null},
-        {"id": "SN028", "game": "Long Yi Fa",   "rev": 0,      "launchDate": null},
-        {"id": "SN029", "game": "Long Yi Fa",   "rev": 0,      "launchDate": null},
-        {"id": "SN030", "game": "Long Yi Fa",   "rev": 0,      "launchDate": null}
+        {
+          "id": "SN001",
+          "game": "Long Jin Bao",
+          "rev": 169000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN002",
+          "game": "Long Jin Bao",
+          "rev": 169000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN003",
+          "game": "Long Jin Bao",
+          "rev": 169000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN004",
+          "game": "Long Jin Bao",
+          "rev": 169000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN005",
+          "game": "Long Jin Bao",
+          "rev": 169000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN006",
+          "game": "Long Jin Bao",
+          "rev": 169000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN007",
+          "game": "Long Jin Bao",
+          "rev": 169000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN008",
+          "game": "Long Jin Bao",
+          "rev": 169000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN009",
+          "game": "Long Jin Bao",
+          "rev": 169000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN010",
+          "game": "Long Jin Bao",
+          "rev": 169000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN011",
+          "game": "Man Yi Fa",
+          "rev": 300000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN012",
+          "game": "Man Yi Fa",
+          "rev": 300000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN013",
+          "game": "Man Yi Fa",
+          "rev": 300000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN014",
+          "game": "Man Yi Fa",
+          "rev": 300000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN015",
+          "game": "Man Yi Fa",
+          "rev": 300000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN016",
+          "game": "Man Yi Fa",
+          "rev": 300000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN017",
+          "game": "Man Yi Fa",
+          "rev": 300000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN018",
+          "game": "Man Yi Fa",
+          "rev": 300000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN019",
+          "game": "Man Yi Fa",
+          "rev": 300000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN020",
+          "game": "Man Yi Fa",
+          "rev": 300000,
+          "launchDate": "2025-12-04"
+        },
+        {
+          "id": "SN021",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "SN022",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "SN023",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "SN024",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "SN025",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "SN026",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "SN027",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "SN028",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "SN029",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "SN030",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        }
       ]
     },
     {
-      "id": 3, "name": "Okada", "region": "菲律賓", "casinoAvg": 8333,
+      "id": 3,
+      "name": "Okada",
+      "region": "菲律賓",
+      "casinoAvg": 8333,
       "machines": [
-        {"id": "OK001", "game": "Bao Ni Fa",    "rev": 0, "launchDate": null},
-        {"id": "OK002", "game": "Bao Ni Fa",    "rev": 0, "launchDate": null},
-        {"id": "OK003", "game": "Bao Ni Fa",    "rev": 0, "launchDate": null},
-        {"id": "OK004", "game": "Bao Ni Fa",    "rev": 0, "launchDate": null},
-        {"id": "OK005", "game": "Bao Ni Fa",    "rev": 0, "launchDate": null},
-        {"id": "OK006", "game": "Bao Ni Fa",    "rev": 0, "launchDate": null},
-        {"id": "OK007", "game": "Bao Ni Fa",    "rev": 0, "launchDate": null},
-        {"id": "OK008", "game": "Bao Ni Fa",    "rev": 0, "launchDate": null},
-        {"id": "OK009", "game": "Bao Ni Fa",    "rev": 0, "launchDate": null},
-        {"id": "OK010", "game": "Bao Ni Fa",    "rev": 0, "launchDate": null},
-        {"id": "OK011", "game": "Bao Ni Fa",    "rev": 0, "launchDate": null},
-        {"id": "OK012", "game": "Bao Ni Fa",    "rev": 0, "launchDate": null},
-        {"id": "OK013", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "OK014", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "OK015", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "OK016", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "OK017", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "OK018", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "OK019", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "OK020", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "OK021", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "OK022", "game": "Long Jin Bao", "rev": 0, "launchDate": null}
+        {
+          "id": "OK001",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK002",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK003",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK004",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK005",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK006",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK007",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK008",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK009",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK010",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK011",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK012",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK013",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK014",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK015",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK016",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK017",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK018",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK019",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK020",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK021",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "OK022",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        }
       ]
     },
     {
-      "id": 4, "name": "Newport World", "region": "菲律賓", "casinoAvg": 6667,
+      "id": 4,
+      "name": "Newport World",
+      "region": "菲律賓",
+      "casinoAvg": 6667,
       "machines": [
-        {"id": "NW001", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "NW002", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "NW003", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "NW004", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "NW005", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "NW006", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "NW007", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "NW008", "game": "Long Yi Fa", "rev": 0, "launchDate": null}
+        {
+          "id": "NW001",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NW002",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NW003",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NW004",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NW005",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NW006",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NW007",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NW008",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        }
       ]
     },
     {
-      "id": 5, "name": "Hann", "region": "菲律賓", "casinoAvg": 6667,
+      "id": 5,
+      "name": "Hann",
+      "region": "菲律賓",
+      "casinoAvg": 6667,
       "machines": [
-        {"id": "HN001", "game": "Man Fu Bao",   "rev": 0, "launchDate": "2026-03-09"},
-        {"id": "HN002", "game": "Man Fu Bao",   "rev": 0, "launchDate": "2026-03-09"},
-        {"id": "HN003", "game": "Man Fu Bao",   "rev": 0, "launchDate": "2026-03-09"},
-        {"id": "HN004", "game": "Man Fu Bao",   "rev": 0, "launchDate": "2026-03-09"},
-        {"id": "HN005", "game": "Man Fu Bao",   "rev": 0, "launchDate": "2026-03-09"},
-        {"id": "HN006", "game": "Man Fu Bao",   "rev": 0, "launchDate": "2026-03-09"},
-        {"id": "HN007", "game": "Man Fu Bao",   "rev": 0, "launchDate": "2026-03-09"},
-        {"id": "HN008", "game": "Man Fu Bao",   "rev": 0, "launchDate": "2026-03-09"},
-        {"id": "HN009", "game": "Man Fu Bao",   "rev": 0, "launchDate": "2026-03-09"},
-        {"id": "HN010", "game": "Man Fu Bao",   "rev": 0, "launchDate": "2026-03-09"},
-        {"id": "HN011", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "HN012", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "HN013", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "HN014", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "HN015", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "HN016", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "HN017", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "HN018", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "HN019", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "HN020", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "HN021", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "HN022", "game": "Long Jin Bao", "rev": 0, "launchDate": null}
+        {
+          "id": "HN001",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": "2026-03-09"
+        },
+        {
+          "id": "HN002",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": "2026-03-09"
+        },
+        {
+          "id": "HN003",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": "2026-03-09"
+        },
+        {
+          "id": "HN004",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": "2026-03-09"
+        },
+        {
+          "id": "HN005",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": "2026-03-09"
+        },
+        {
+          "id": "HN006",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": "2026-03-09"
+        },
+        {
+          "id": "HN007",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": "2026-03-09"
+        },
+        {
+          "id": "HN008",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": "2026-03-09"
+        },
+        {
+          "id": "HN009",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": "2026-03-09"
+        },
+        {
+          "id": "HN010",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": "2026-03-09"
+        },
+        {
+          "id": "HN011",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "HN012",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "HN013",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "HN014",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "HN015",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "HN016",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "HN017",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "HN018",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "HN019",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "HN020",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "HN021",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "HN022",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        }
       ]
     },
     {
-      "id": 6, "name": "NuStar", "region": "菲律賓", "casinoAvg": 6667,
+      "id": 6,
+      "name": "NuStar",
+      "region": "菲律賓",
+      "casinoAvg": 6667,
       "machines": [
-        {"id": "NS001", "game": "Bao Ni Fa",  "rev": 0, "launchDate": null},
-        {"id": "NS002", "game": "Bao Ni Fa",  "rev": 0, "launchDate": null},
-        {"id": "NS003", "game": "Bao Ni Fa",  "rev": 0, "launchDate": null},
-        {"id": "NS004", "game": "Bao Ni Fa",  "rev": 0, "launchDate": null},
-        {"id": "NS005", "game": "Bao Ni Fa",  "rev": 0, "launchDate": null},
-        {"id": "NS006", "game": "Bao Ni Fa",  "rev": 0, "launchDate": null},
-        {"id": "NS007", "game": "Bao Ni Fa",  "rev": 0, "launchDate": null},
-        {"id": "NS008", "game": "Bao Ni Fa",  "rev": 0, "launchDate": null},
-        {"id": "NS009", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "NS010", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "NS011", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "NS012", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "NS013", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "NS014", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "NS015", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "NS016", "game": "Long Yi Fa", "rev": 0, "launchDate": null}
+        {
+          "id": "NS001",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NS002",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NS003",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NS004",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NS005",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NS006",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NS007",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NS008",
+          "game": "Bao Ni Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NS009",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NS010",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NS011",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NS012",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NS013",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NS014",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NS015",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NS016",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        }
       ]
     },
     {
-      "id": 7, "name": "WInford", "region": "菲律賓", "casinoAvg": 6667,
+      "id": 7,
+      "name": "WInford",
+      "region": "菲律賓",
+      "casinoAvg": 6667,
       "machines": [
-        {"id": "WI001", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "WI002", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "WI003", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "WI004", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "WI005", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "WI006", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "WI007", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "WI008", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "WI009", "game": "Long Yi Fa", "rev": 0, "launchDate": null},
-        {"id": "WI010", "game": "Long Yi Fa", "rev": 0, "launchDate": null}
+        {
+          "id": "WI001",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "WI002",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "WI003",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "WI004",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "WI005",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "WI006",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "WI007",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "WI008",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "WI009",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "WI010",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        }
       ]
     },
     {
-      "id": 8, "name": "Bluechip", "region": "菲律賓", "casinoAvg": 6667,
+      "id": 8,
+      "name": "Bluechip",
+      "region": "菲律賓",
+      "casinoAvg": 6667,
       "machines": [
-        {"id": "BC001", "game": "Man Fu Bao", "rev": 0, "launchDate": "2025-12-26"},
-        {"id": "BC002", "game": "Man Fu Bao", "rev": 0, "launchDate": "2025-12-26"},
-        {"id": "BC003", "game": "Man Fu Bao", "rev": 0, "launchDate": "2025-12-26"},
-        {"id": "BC004", "game": "Man Fu Bao", "rev": 0, "launchDate": "2025-12-26"},
-        {"id": "BC005", "game": "Man Fu Bao", "rev": 0, "launchDate": "2025-12-26"},
-        {"id": "BC006", "game": "Man Fu Bao", "rev": 0, "launchDate": "2025-12-26"},
-        {"id": "BC007", "game": "Man Fu Bao", "rev": 0, "launchDate": "2025-12-26"},
-        {"id": "BC008", "game": "Man Fu Bao", "rev": 0, "launchDate": "2025-12-26"}
+        {
+          "id": "BC001",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": "2025-12-26"
+        },
+        {
+          "id": "BC002",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": "2025-12-26"
+        },
+        {
+          "id": "BC003",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": "2025-12-26"
+        },
+        {
+          "id": "BC004",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": "2025-12-26"
+        },
+        {
+          "id": "BC005",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": "2025-12-26"
+        },
+        {
+          "id": "BC006",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": "2025-12-26"
+        },
+        {
+          "id": "BC007",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": "2025-12-26"
+        },
+        {
+          "id": "BC008",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": "2025-12-26"
+        }
       ]
     },
     {
-      "id": 9, "name": "Newcoast", "region": "菲律賓", "casinoAvg": 6667,
+      "id": 9,
+      "name": "Newcoast",
+      "region": "菲律賓",
+      "casinoAvg": 6667,
       "machines": [
-        {"id": "NC001", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "NC002", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "NC003", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "NC004", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "NC005", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "NC006", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "NC007", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "NC008", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "NC009", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "NC010", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "NC011", "game": "Long Jin Bao", "rev": 0, "launchDate": null},
-        {"id": "NC012", "game": "Long Jin Bao", "rev": 0, "launchDate": null}
+        {
+          "id": "NC001",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NC002",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NC003",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NC004",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NC005",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NC006",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NC007",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NC008",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NC009",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NC010",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NC011",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "NC012",
+          "game": "Long Jin Bao",
+          "rev": 0,
+          "launchDate": null
+        }
       ]
     },
     {
-      "id": 10, "name": "Casino Plus", "region": "菲律賓", "casinoAvg": 6667,
+      "id": 10,
+      "name": "Casino Plus",
+      "region": "菲律賓",
+      "casinoAvg": 6667,
       "machines": [
-        {"id": "CP001", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP002", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP003", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP004", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP005", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP006", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP007", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP008", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP009", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP010", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP011", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP012", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP013", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP014", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP015", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP016", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP017", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP018", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP019", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP020", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP021", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP022", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP023", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP024", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP025", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP026", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP027", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP028", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP029", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP030", "game": "Long Yi Fa", "rev": 0, "launchDate": "2025-10-17"},
-        {"id": "CP031", "game": "Man Fu Bao", "rev": 0, "launchDate": null},
-        {"id": "CP032", "game": "Man Fu Bao", "rev": 0, "launchDate": null},
-        {"id": "CP033", "game": "Man Fu Bao", "rev": 0, "launchDate": null},
-        {"id": "CP034", "game": "Man Fu Bao", "rev": 0, "launchDate": null},
-        {"id": "CP035", "game": "Man Fu Bao", "rev": 0, "launchDate": null},
-        {"id": "CP036", "game": "Man Fu Bao", "rev": 0, "launchDate": null},
-        {"id": "CP037", "game": "Man Yi Fa",  "rev": 0, "launchDate": null},
-        {"id": "CP038", "game": "Man Yi Fa",  "rev": 0, "launchDate": null},
-        {"id": "CP039", "game": "Man Yi Fa",  "rev": 0, "launchDate": null},
-        {"id": "CP040", "game": "Man Yi Fa",  "rev": 0, "launchDate": null},
-        {"id": "CP041", "game": "Man Yi Fa",  "rev": 0, "launchDate": null},
-        {"id": "CP042", "game": "Man Yi Fa",  "rev": 0, "launchDate": null}
+        {
+          "id": "CP001",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP002",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP003",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP004",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP005",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP006",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP007",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP008",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP009",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP010",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP011",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP012",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP013",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP014",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP015",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP016",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP017",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP018",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP019",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP020",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP021",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP022",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP023",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP024",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP025",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP026",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP027",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP028",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP029",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP030",
+          "game": "Long Yi Fa",
+          "rev": 0,
+          "launchDate": "2025-10-17"
+        },
+        {
+          "id": "CP031",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "CP032",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "CP033",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "CP034",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "CP035",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "CP036",
+          "game": "Man Fu Bao",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "CP037",
+          "game": "Man Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "CP038",
+          "game": "Man Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "CP039",
+          "game": "Man Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "CP040",
+          "game": "Man Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "CP041",
+          "game": "Man Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        },
+        {
+          "id": "CP042",
+          "game": "Man Yi Fa",
+          "rev": 0,
+          "launchDate": null
+        }
       ]
     }
   ]
