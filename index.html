@@ -891,6 +891,12 @@ async function firebaseSignOut(){
 // ── Firebase Data Functions ──
 function loadData(){
   showToast('⏳ 載入資料中…');
+  if(typeof DATA_REF === 'undefined'){
+    console.error('DATA_REF 未定義，Firebase 初始化失敗');
+    applyData(FALLBACK_DATA);
+    showToast('⚠ Firebase 初始化失敗，請重新整理');
+    return;
+  }
   DATA_REF.once('value').then(snapshot=>{
     const json = snapshot.val();
     if(json){
@@ -904,9 +910,9 @@ function loadData(){
       });
     }
   }).catch(e=>{
-    console.warn('Firebase 載入失敗，使用內建資料:', e.message);
+    console.warn('Firebase 載入失敗:', e.code, e.message);
     applyData(FALLBACK_DATA);
-    showToast('⚠ Firebase 連線失敗，使用內建資料');
+    showToast(`⚠ Firebase 錯誤：${e.code || e.message}`);
   });
 
   // 即時監聽資料變更（其他裝置更新時自動同步）
