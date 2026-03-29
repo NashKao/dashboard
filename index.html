@@ -837,8 +837,8 @@ function nowDatetime(){
 
 function renderAll(){
   renderOverview();
-  if(document.getElementById('view-coverage')?.classList.contains('active')) renderCoverage();
-  if(document.getElementById('view-suggestions')?.classList.contains('active')) renderSuggestions();
+  renderCoverage();
+  renderSuggestions();
 }
 
 function showToast(msg){
@@ -851,6 +851,7 @@ function showToast(msg){
 function forceLogout(){
   localStorage.removeItem('slt_auth_token');
   localStorage.removeItem('slt_auth_exp');
+  localStorage.removeItem('slt_is_admin');
   firebaseSignOut();
   location.reload();
 }
@@ -1507,6 +1508,7 @@ let _isAdminSession=false;
 function enterApp(asAdmin,remember){
   _isAdminSession=asAdmin;
   authenticate(remember);
+  localStorage.setItem('slt_is_admin', asAdmin ? '1' : '0');
   document.getElementById('pwScreen').style.display='none';
   document.getElementById('mainApp').style.display='block';
   ['adminBackendBtn'].forEach(id=>{
@@ -1907,9 +1909,16 @@ async function autoSave(successMsg){
 if(isAuthenticated()){
   document.getElementById('pwScreen').style.display='none';
   document.getElementById('mainApp').style.display='block';
-  ['adminBackendBtn'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; });
+  // 檢查是否管理員 session
+  const _wasAdmin = localStorage.getItem('slt_is_admin') === '1';
+  ['adminBackendBtn'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display=_wasAdmin?'':'none'; });
   document.getElementById('logoutBtn').style.display='';
-  loadData();
+  if(_wasAdmin){
+    _isAdminSession = true;
+    firebaseSignIn().then(()=>loadData());
+  } else {
+    loadData();
+  }
 } else {
   setTimeout(()=>document.getElementById('pwInput').focus(),100);
   updateKPIs();
