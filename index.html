@@ -491,30 +491,6 @@ input[type='date']::-webkit-calendar-picker-indicator{
   </div>
 </div>
 
-<!-- ── CHANGE PASSWORD MODAL ── -->
-<div class="modal-overlay" id="chpwModal">
-  <div class="chpw-modal">
-    <button class="modal-close" id="closeChpwBtn">✕</button>
-    <h3>🔑 變更一般密碼</h3>
-    <div class="chpw-field">
-      <label>管理員密碼（驗證身份用）</label>
-      <input type="password" id="chpwAdmin" placeholder="輸入管理員密碼">
-    </div>
-    <div class="chpw-field">
-      <label>新的一般密碼（至少 4 個字元）</label>
-      <input type="password" id="chpwNew" placeholder="設定新的一般密碼">
-    </div>
-    <div class="chpw-field">
-      <label>確認新密碼</label>
-      <input type="password" id="chpwConfirm" placeholder="再輸入一次">
-    </div>
-    <div class="chpw-err" id="chpwErr"></div>
-    <div class="chpw-actions">
-      <button class="btn" id="closeChpwBtn2">取消</button>
-      <button class="btn primary" id="submitChpwBtn">確認變更</button>
-    </div>
-  </div>
-</div>
 
 <div class="app" id="mainApp" style="display:none">
 
@@ -528,8 +504,7 @@ input[type='date']::-webkit-calendar-picker-indicator{
   </div>
   <div class="header-actions">
     <div class="live-badge"><div class="live-dot"></div><span id="dataDateLabel">菲律賓資料</span></div>
-    <button class="btn" id="chpwBtn" title="變更密碼" style="display:none">🔑</button>
-    <button class="btn" id="adminBackendBtn" style="display:none">⚙ 後台</button>
+<button class="btn" id="adminBackendBtn" style="display:none">⚙ 後台</button>
     <button class="btn" id="logoutBtn" style="display:none;opacity:.7">⏏ 登出</button>
   </div>
 </header>
@@ -702,10 +677,7 @@ input[type='date']::-webkit-calendar-picker-indicator{
   <div class="modal" style="max-width:720px;width:100%">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
       <h2 style="font-family:var(--mono);font-size:16px;letter-spacing:2px;">⚙ 後台管理</h2>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <button id="saveGitHubBtn" class="btn" style="background:rgba(0,255,157,.1);border-color:var(--accent3);color:var(--accent3);font-size:11px;padding:6px 12px;">💾 儲存至 GitHub</button>
-          <button id="closeAdminBtn" style="background:transparent;border:none;color:var(--text2);font-size:20px;cursor:pointer;">✕</button>
-      </div>
+      <button id="closeAdminBtn" style="background:transparent;border:none;color:var(--text2);font-size:20px;cursor:pointer;">✕</button>
     </div>
 
     <!-- Tabs -->
@@ -1517,7 +1489,7 @@ function enterApp(asAdmin,remember){
   authenticate(remember);
   document.getElementById('pwScreen').style.display='none';
   document.getElementById('mainApp').style.display='block';
-  ['chpwBtn','adminBackendBtn'].forEach(id=>{
+  ['adminBackendBtn'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.style.display=asAdmin?'':'none';
   });
@@ -1550,31 +1522,8 @@ function togglePwVis(){
   else{ inp.type='password'; btn.textContent='👁'; }
 }
 
-function openChpw(){
-  ['chpwAdmin','chpwNew','chpwConfirm'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('chpwErr').textContent='';
-  document.getElementById('chpwModal').classList.add('open');
-  setTimeout(()=>document.getElementById('chpwAdmin').focus(),100);
-}
-function closeChpw(){ document.getElementById('chpwModal').classList.remove('open'); }
-function submitChpw(){
-  const admin=document.getElementById('chpwAdmin').value;
-  const nw=document.getElementById('chpwNew').value;
-  const conf=document.getElementById('chpwConfirm').value;
-  const err=document.getElementById('chpwErr');
-  if(hashPw(admin)!==getAdminHash()){ err.textContent='✕ 管理員密碼不正確'; return; }
-  if(nw.length<4){ err.textContent='新密碼至少需要 4 個字元'; return; }
-  if(nw!==conf){ err.textContent='兩次輸入的新密碼不一致'; return; }
-  if(nw===admin){ err.textContent='一般密碼不能和管理員密碼相同'; return; }
-  localStorage.setItem(PW_KEY,hashPw(nw));
-  authenticate(true);
-  closeChpw();
-  showToast('✓ 一般密碼已變更');
-}
 
-// ═══════════════════════════════════════════════════════════
-// ADMIN BACKEND FUNCTIONS
-// ═══════════════════════════════════════════════════════════
+
 function openAdmin(){
   document.getElementById('adminModal').style.display='flex';
   populateAdminDropdowns();
@@ -1856,13 +1805,9 @@ document.querySelectorAll('.admin-tab').forEach(btn=>{
 document.getElementById('pwToggle')    .addEventListener('click', togglePwVis);
 document.getElementById('pwSubmitBtn') .addEventListener('click', submitPw);
 document.getElementById('pwInput')     .addEventListener('keydown', e=>{ if(e.key==='Enter') submitPw(); });
-document.getElementById('chpwBtn')     .addEventListener('click', openChpw);
 document.getElementById('tab-overview')   .addEventListener('click', ()=>switchTab('overview'));
 document.getElementById('tab-coverage')   .addEventListener('click', ()=>switchTab('coverage'));
 document.getElementById('tab-suggestions').addEventListener('click', ()=>switchTab('suggestions'));
-document.getElementById('closeChpwBtn') .addEventListener('click', closeChpw);
-document.getElementById('closeChpwBtn2').addEventListener('click', closeChpw);
-document.getElementById('submitChpwBtn').addEventListener('click', submitChpw);
 document.getElementById('sortMachines')?.addEventListener('click', ()=>{ document.getElementById('sortBy').value='machines_desc'; renderOverview(); });
 document.getElementById('sortRev')     ?.addEventListener('click', ()=>{ document.getElementById('sortBy').value='rev_desc'; renderOverview(); });
 document.getElementById('search')      ?.addEventListener('input', renderOverview);
@@ -1930,29 +1875,15 @@ async function saveToFirebase(){
 async function autoSave(successMsg){
   showToast(successMsg);
   renderAll();
-  const btn = document.getElementById('saveGitHubBtn');
-  if(btn){ btn.textContent='⏳ 同步中…'; btn.disabled=true; }
   await saveToFirebase();
-  if(btn){ btn.textContent='💾 儲存至 Firebase'; btn.disabled=false; }
 }
 
-document.getElementById('saveGitHubBtn').addEventListener('click', async ()=>{
-  const btn = document.getElementById('saveGitHubBtn');
-  btn.textContent = '⏳ 儲存中…';
-  btn.disabled = true;
-  saveToLocalStorage();
-  const ok = await saveToGitHub();
-  btn.textContent = '💾 儲存至 Firebase';
-  btn.disabled = false;
-  renderAll();
-  renderOverview();
-});
 
 // ── Init ──
 if(isAuthenticated()){
   document.getElementById('pwScreen').style.display='none';
   document.getElementById('mainApp').style.display='block';
-  ['chpwBtn','adminBackendBtn'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; });
+  ['adminBackendBtn'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; });
   document.getElementById('logoutBtn').style.display='';
   loadData();
 } else {
