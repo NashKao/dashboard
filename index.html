@@ -486,6 +486,9 @@ input[type='date']::-webkit-calendar-picker-indicator{
     <button class="pw-btn" id="pwSubmitBtn">進入系統</button>
     <div class="pw-footer">如忘記密碼請聯絡系統管理員</div>
   </div>
+  <div style="position:fixed;bottom:16px;right:20px;font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:1px;">
+    <span id="loginAppVersion" style="color:var(--accent)"></span> &nbsp;·&nbsp; <span id="loginVersionDate"></span>
+  </div>
 </div>
 
 <!-- ── CHANGE PASSWORD MODAL ── -->
@@ -520,7 +523,7 @@ input[type='date']::-webkit-calendar-picker-indicator{
     <div class="logo-icon">SLT</div>
     <div>
       <div class="logo-text">全球／區域市場機台佔有率與分佈分析</div>
-      <div class="logo-sub">GLOBAL MARKET SLOT DISTRIBUTION ANALYSIS</div>
+      <div class="logo-sub">GLOBAL MARKET SLOT DISTRIBUTION ANALYSIS &nbsp;·&nbsp; <span id="appVersion" style="color:var(--accent)"></span> &nbsp;·&nbsp; <span id="versionDate" style="color:var(--text3)"></span></div>
     </div>
   </div>
   <div class="header-actions">
@@ -680,23 +683,7 @@ input[type='date']::-webkit-calendar-picker-indicator{
 
 <div class="toast" id="toast"></div>
 
-<!-- ── GITHUB TOKEN SETUP (one-time) ── -->
-<div id="tokenSetupOverlay" style="display:none;position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.8);align-items:center;justify-content:center;padding:20px;">
-  <div style="background:var(--surface);border:1px solid var(--accent);padding:28px;max-width:420px;width:100%;position:relative;">
-    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent3));"></div>
-    <div style="font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:2px;margin-bottom:8px;">GITHUB TOKEN 設定</div>
-    <div style="font-family:var(--mono);font-size:11px;color:var(--text2);margin-bottom:16px;line-height:1.6;">
-      首次使用需要設定 GitHub Token 以啟用自動儲存功能。<br>
-      Token 只存在本機瀏覽器，不會外洩。
-    </div>
-    <input id="tokenSetupInput" type="password" placeholder="ghp_xxxxxxxxxxxx"
-      style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:var(--mono);font-size:13px;margin-bottom:12px;box-sizing:border-box;">
-    <div style="display:flex;gap:8px;">
-      <button id="tokenSetupSkip" style="flex:1;background:transparent;border:1px solid var(--border);color:var(--text2);padding:8px;font-family:var(--mono);font-size:12px;cursor:pointer;">稍後再設定</button>
-      <button id="tokenSetupSave" style="flex:2;background:rgba(0,212,255,.1);border:1px solid var(--accent);color:var(--accent);padding:8px;font-family:var(--mono);font-size:12px;cursor:pointer;letter-spacing:1px;">儲存 Token</button>
-    </div>
-  </div>
-</div>
+
 
 <!-- ── CUSTOM CONFIRM DIALOG ── -->
 <div id="confirmOverlay" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:20px;">
@@ -717,8 +704,7 @@ input[type='date']::-webkit-calendar-picker-indicator{
       <h2 style="font-family:var(--mono);font-size:16px;letter-spacing:2px;">⚙ 後台管理</h2>
       <div style="display:flex;align-items:center;gap:8px;">
         <button id="saveGitHubBtn" class="btn" style="background:rgba(0,255,157,.1);border-color:var(--accent3);color:var(--accent3);font-size:11px;padding:6px 12px;">💾 儲存至 GitHub</button>
-        <button id="resetTokenBtn" style="background:transparent;border:1px solid var(--border);color:var(--text3);padding:6px 10px;font-family:var(--mono);font-size:13px;cursor:pointer;" title="設定 GitHub Token">🔑</button>
-        <button id="closeAdminBtn" style="background:transparent;border:none;color:var(--text2);font-size:20px;cursor:pointer;">✕</button>
+          <button id="closeAdminBtn" style="background:transparent;border:none;color:var(--text2);font-size:20px;cursor:pointer;">✕</button>
       </div>
     </div>
 
@@ -789,6 +775,24 @@ input[type='date']::-webkit-calendar-picker-indicator{
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDJV4j3m2Ffvln8yeQ_JSw_30M5xi-l3Z0",
+    authDomain: "jumbo-dashboard-3916c.firebaseapp.com",
+    databaseURL: "https://jumbo-dashboard-3916c-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "jumbo-dashboard-3916c",
+    storageBucket: "jumbo-dashboard-3916c.firebasestorage.app",
+    messagingSenderId: "91968362292",
+    appId: "1:91968362292:web:7f12741355c1bde23bf761"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db       = firebase.database();
+  const DATA_REF = db.ref('data');
+  const auth     = firebase.auth();
+</script>
 <script>
 // ═══════════════════════════════════════════════════════════
 // DATA — loaded from data.json via GitHub
@@ -799,14 +803,6 @@ let CASINOS = [];
 let CASINO_TOTAL = {};
 let _dataMeta = {};
 
-// GitHub config (set by admin in settings)
-const GH_REPO  = 'nashkao/dashboard';
-const GH_BRANCH = 'main';
-const GH_FILE  = 'data.json';
-const GH_API   = `https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`;
-
-function getGHToken(){ return localStorage.getItem('gh_token') || ''; }
-function setGHToken(t){ localStorage.setItem('gh_token', t); }
 
 // ═══════════════════════════════════════════════════════════
 // GAME COLOR SYSTEM
@@ -851,6 +847,22 @@ document.addEventListener('click', e=>{
   if(regionHdr){ toggleRegion(regionHdr.dataset.blockId); return; }
 });
 
+
+const APP_VERSION = 'v1.1.0';
+const APP_DATE    = '2026-03-29';
+
+// Show version in header and login page
+document.getElementById('appVersion').textContent = APP_VERSION;
+document.getElementById('versionDate').textContent = APP_DATE;
+document.getElementById('loginAppVersion').textContent = APP_VERSION;
+document.getElementById('loginVersionDate').textContent = APP_DATE;
+
+function renderAll(){
+  renderOverview();
+  if(document.getElementById('view-coverage')?.classList.contains('active')) renderCoverage();
+  if(document.getElementById('view-suggestions')?.classList.contains('active')) renderSuggestions();
+}
+
 function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;
@@ -861,6 +873,7 @@ function showToast(msg){
 function forceLogout(){
   localStorage.removeItem('slt_auth_token');
   localStorage.removeItem('slt_auth_exp');
+  firebaseSignOut();
   location.reload();
 }
 
@@ -876,66 +889,63 @@ function showConfirm(msg, onYes){
   no.onclick  = ()=>{ close(); };
 }
 
-const LS_KEY = 'slt_data';
 
-function saveToLocalStorage(){
-  const json = {
-    meta:{ lastUpdated: new Date().toISOString().slice(0,10), updatedBy:'admin' },
-    games: GAMES,
-    casinoTotal: CASINO_TOTAL,
-    casinos: CASINOS
-  };
-  try{ localStorage.setItem(LS_KEY, JSON.stringify(json)); } catch(e){ console.warn('localStorage 儲存失敗', e); }
-}
+// ── Firebase Auth ──
+const FIREBASE_EMAIL = 'nash131119@gmail.com';
+const FIREBASE_PASS  = 'jumbo@admin';
 
-function loadFromLocalStorage(){
-  try{
-    const raw = localStorage.getItem(LS_KEY);
-    if(raw) return JSON.parse(raw);
-  } catch(e){ console.warn('localStorage 讀取失敗', e); }
-  return null;
-}
-
-async function loadData(){
-  // 優先用 localStorage（即時），再嘗試 GitHub（最新備份）
-  const local = loadFromLocalStorage();
-  if(local){
-    applyData(local);
-    console.log('✓ 資料從 localStorage 載入');
-    // 背景同步 GitHub 最新（靜默）
-    syncFromGitHub();
-  } else {
-    // 第一次開啟，從 GitHub 或內建資料載入
-    try {
-      const url = `https://raw.githubusercontent.com/${GH_REPO}/${GH_BRANCH}/${GH_FILE}?t=${Date.now()}`;
-      const res = await fetch(url);
-      if(!res.ok) throw new Error('HTTP ' + res.status);
-      const json = await res.json();
-      applyData(json);
-      saveToLocalStorage();
-      console.log('✓ 資料從 GitHub 載入');
-    } catch(e) {
-      console.warn('GitHub 載入失敗，使用內建資料:', e.message);
-      applyData(FALLBACK_DATA);
-    }
+async function firebaseSignIn(){
+  try {
+    await auth.signInWithEmailAndPassword(FIREBASE_EMAIL, FIREBASE_PASS);
+    console.log('✓ Firebase Auth 登入成功');
+    return true;
+  } catch(e) {
+    console.warn('Firebase Auth 登入失敗:', e.message);
+    return false;
   }
 }
 
-async function syncFromGitHub(){
-  // 背景靜默同步，只在 GitHub 有更新時才覆蓋 localStorage
-  try {
-    const url = `https://raw.githubusercontent.com/${GH_REPO}/${GH_BRANCH}/${GH_FILE}?t=${Date.now()}`;
-    const res = await fetch(url);
-    if(!res.ok) return;
-    const json = await res.json();
-    const local = loadFromLocalStorage();
-    // 只有 GitHub 版本較新時才覆蓋
-    if(!local || (json.meta?.lastUpdated > (local.meta?.lastUpdated||''))){
+async function firebaseSignOut(){
+  try { await auth.signOut(); } catch(e) {}
+}
+
+// ── Firebase Data Functions ──
+function loadData(){
+  showToast('⏳ 載入資料中…');
+  DATA_REF.once('value').then(snapshot=>{
+    const json = snapshot.val();
+    if(json){
       applyData(json);
-      saveToLocalStorage();
-      console.log('✓ 背景同步 GitHub 資料（較新版本）');
+      console.log('✓ 資料從 Firebase 載入');
+    } else {
+      // 第一次使用，上傳內建資料
+      saveDataToFirebase(FALLBACK_DATA).then(()=>{
+        applyData(FALLBACK_DATA);
+        console.log('✓ 初始資料已寫入 Firebase');
+      });
     }
-  } catch(e){ /* 靜默失敗 */ }
+  }).catch(e=>{
+    console.warn('Firebase 載入失敗，使用內建資料:', e.message);
+    applyData(FALLBACK_DATA);
+    showToast('⚠ Firebase 連線失敗，使用內建資料');
+  });
+
+  // 即時監聽資料變更（其他裝置更新時自動同步）
+  DATA_REF.on('value', snapshot=>{
+    const json = snapshot.val();
+    if(json) applyData(json);
+  });
+}
+
+function saveDataToFirebase(json){
+  return DATA_REF.set(json).then(()=>{
+    console.log('✓ 資料已寫入 Firebase');
+    return true;
+  }).catch(e=>{
+    console.error('Firebase 寫入失敗:', e);
+    showToast('⚠ Firebase 儲存失敗：' + e.message);
+    return false;
+  });
 }
 
 function applyData(json){
@@ -1198,39 +1208,7 @@ function toggleDetail(casinoId, btn){
   }
 }
 
-async function saveDataToGitHub(json){
-  const token = getGHToken();
-  if(!token){ showToast('⚠ 請先在設定中填入 GitHub Token'); return false; }
-  try {
-    // Get current file SHA
-    const getRes = await fetch(GH_API, {
-      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json' }
-    });
-    const fileInfo = await getRes.json();
-    if(!fileInfo.sha){ showToast('⚠ 無法取得檔案資訊，請確認 Token 權限'); return false; }
-
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(json, null, 2))));
-    const putRes = await fetch(GH_API, {
-      method:'PUT',
-      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json', 'Content-Type':'application/json' },
-      body: JSON.stringify({
-        message:`Update data.json - ${new Date().toISOString().slice(0,10)}`,
-        content, sha: fileInfo.sha, branch: GH_BRANCH
-      })
-    });
-    if(putRes.ok){
-      showToast('✓ 資料已儲存至 GitHub，約 1 分鐘後生效');
-      return true;
-    } else {
-      const err = await putRes.json();
-      showToast('⚠ 儲存失敗：' + (err.message||'未知錯誤'));
-      return false;
-    }
-  } catch(e) {
-    showToast('⚠ 網路錯誤：' + e.message);
-    return false;
-  }
-}
+// saveDataToFirebase defined above in Firebase Data Functions
 
 
 function renderMachineCoverage(){
@@ -1545,14 +1523,6 @@ function enterApp(asAdmin,remember){
   });
   document.getElementById('logoutBtn').style.display='';
   loadData();
-  // 管理員首次登入，若無 Token 則提示設定
-  if(asAdmin && !getGHToken()){
-    setTimeout(()=>{
-      const overlay = document.getElementById('tokenSetupOverlay');
-      overlay.style.display='flex';
-      document.getElementById('tokenSetupInput').focus();
-    }, 800);
-  }
 }
 
 function submitPw(){
@@ -1622,9 +1592,7 @@ function openAdmin(){
 }
 function closeAdmin(){
   document.getElementById('adminModal').style.display='none';
-  renderOverview();
-  if(document.getElementById('view-coverage')?.classList.contains('active')) renderCoverage();
-  if(document.getElementById('view-suggestions')?.classList.contains('active')) renderSuggestions();
+  renderAll();
 }
 
 function populateAdminDropdowns(){
@@ -1838,7 +1806,7 @@ function renderGameList(){
       _gameColorCache[newName]=_gameColorCache[orig];
       delete _gameColorCache[orig];
       CASINOS.forEach(c=>c.machines.forEach(m=>{ if(m.game===orig) m.game=newName; }));
-      populateAdminDropdowns(); renderGameList(); renderOverview();
+      populateAdminDropdowns(); renderGameList(); renderAll();
       autoSave(`✓ 已將「${orig}」改名為「${newName}」`);
       return;
     }
@@ -1853,7 +1821,7 @@ function renderGameList(){
       showConfirm(msg,()=>{
         CASINOS.forEach(c=>{ c.machines=c.machines.filter(m=>m.game!==g); });
         delete GAMES[g]; delete _gameColorCache[g];
-        populateAdminDropdowns(); renderGameList(); renderOverview();
+        populateAdminDropdowns(); renderGameList(); renderAll();
         autoSave(`✓ 已刪除遊戲 ${g}`);
       });
       return;
@@ -1904,23 +1872,7 @@ document.getElementById('sortBy')      ?.addEventListener('change', renderOvervi
 document.getElementById('closeAdminBtn')   .addEventListener('click', closeAdmin);
 document.getElementById('adminBackendBtn') .addEventListener('click', openAdmin);
 document.getElementById('logoutBtn')       .addEventListener('click', forceLogout);
-document.getElementById('resetTokenBtn').addEventListener('click',()=>{
-  document.getElementById('tokenSetupInput').value='';
-  document.getElementById('tokenSetupOverlay').style.display='flex';
-  setTimeout(()=>document.getElementById('tokenSetupInput').focus(),100);
-});
 
-document.getElementById('tokenSetupSave').addEventListener('click',()=>{
-  const t=document.getElementById('tokenSetupInput').value.trim();
-  if(!t){ showToast('⚠ 請輸入 Token'); return; }
-  setGHToken(t);
-  document.getElementById('tokenSetupOverlay').style.display='none';
-  showToast('✓ Token 已儲存，自動存檔已啟用');
-});
-document.getElementById('tokenSetupSkip').addEventListener('click',()=>{
-  document.getElementById('tokenSetupOverlay').style.display='none';
-  showToast('⚠ 未設定 Token，資料不會自動儲存至 GitHub');
-});
 
 document.getElementById('addCasinoBtn').addEventListener('click',()=>{
   const name=document.getElementById('newCasinoName').value.trim();
@@ -1931,7 +1883,7 @@ document.getElementById('addCasinoBtn').addEventListener('click',()=>{
   const newId=Math.max(...CASINOS.map(c=>c.id),0)+1;
   CASINOS.push({id:newId,name,region,casinoAvg:avg,machines:[]});
   CASINO_TOTAL[newId]=total;
-  populateAdminDropdowns(); renderCasinoSettings(); renderAdminOverview(); renderOverview();
+  populateAdminDropdowns(); renderCasinoSettings(); renderAdminOverview(); renderAll();
   autoSave(`✓ 已新增賭場：${name}`);
   ['newCasinoName','newCasinoRegion','newCasinoAvg','newCasinoTotal'].forEach(id=>{ document.getElementById(id).value=''; });
 });
@@ -1948,7 +1900,7 @@ document.getElementById('addMachineBtn').addEventListener('click',()=>{
   for(let i=0;i<count;i++){
     casino.machines.push({id:`${prefix}${String(base+i+1).padStart(3,'0')}`,game,rev:0,launchDate:date});
   }
-  renderOverview(); renderAdminOverview();
+  renderAdminOverview(); renderAll();
   autoSave(`✓ 已新增 ${casino.name} · ${game} · ${count}台`);
   ['newMachCasino','newMachGame','newMachCount','newMachDate'].forEach(id=>{ document.getElementById(id).value=''; });
 });
@@ -1959,54 +1911,29 @@ document.getElementById('addGameBtn').addEventListener('click',()=>{
   GAMES[name]={name,type:'slots',label:'老虎機'};
   gameColor(name);
   document.getElementById('newGameName').value='';
-  populateAdminDropdowns(); renderGameList(); renderOverview();
+  populateAdminDropdowns(); renderGameList(); renderAll();
   autoSave(`✓ 已新增遊戲：${name}`);
 });
   // Debounce：500ms 內多次變更只存一次
 
 
-async function saveToGitHub(){
-  const token = getGHToken();
-  if(!token){ showToast('⚠ 請先在後台設定 GitHub Token'); return false; }
+async function saveToFirebase(){
   const now = new Date().toISOString().slice(0,10);
   const json = {
     meta:{ lastUpdated: now, updatedBy:'admin' },
     games: GAMES, casinoTotal: CASINO_TOTAL, casinos: CASINOS
   };
-  return await saveDataToGitHub(json);
+  return await saveDataToFirebase(json);
 }
 
-// 有 Token 就自動存，沒有就只顯示成功訊息
+// 自動儲存到 Firebase
 async function autoSave(successMsg){
   showToast(successMsg);
-  // 立刻存到 localStorage（馬上生效）
-  saveToLocalStorage();
-  const token = getGHToken();
-  if(!token){
-    setTimeout(()=>{
-      document.getElementById('tokenSetupInput').value='';
-      document.getElementById('tokenSetupOverlay').style.display='flex';
-      setTimeout(()=>document.getElementById('tokenSetupInput').focus(),100);
-    }, 800);
-    return;
-  }
-  // 背景同步到 GitHub
+  renderAll();
   const btn = document.getElementById('saveGitHubBtn');
   if(btn){ btn.textContent='⏳ 同步中…'; btn.disabled=true; }
-  try {
-    const now = new Date().toISOString().slice(0,10);
-    const json = {
-      meta:{ lastUpdated: now, updatedBy:'admin' },
-      games: GAMES,
-      casinoTotal: CASINO_TOTAL,
-      casinos: CASINOS
-    };
-    await saveDataToGitHub(json);
-    if(btn){ btn.textContent='💾 儲存並更新至 GitHub'; btn.disabled=false; }
-  } catch(e) {
-    if(btn){ btn.textContent='💾 儲存並更新至 GitHub'; btn.disabled=false; }
-    showToast('⚠ GitHub 同步失敗，資料已存本機');
-  }
+  await saveToFirebase();
+  if(btn){ btn.textContent='💾 儲存至 Firebase'; btn.disabled=false; }
 }
 
 document.getElementById('saveGitHubBtn').addEventListener('click', async ()=>{
@@ -2015,9 +1942,10 @@ document.getElementById('saveGitHubBtn').addEventListener('click', async ()=>{
   btn.disabled = true;
   saveToLocalStorage();
   const ok = await saveToGitHub();
-  btn.textContent = '💾 儲存並更新至 GitHub';
+  btn.textContent = '💾 儲存至 Firebase';
   btn.disabled = false;
-  if(ok){ renderOverview(); renderCoverage(); }
+  renderAll();
+  renderOverview();
 });
 
 // ── Init ──
