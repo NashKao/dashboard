@@ -841,11 +841,15 @@ function renderAll(){
   renderSuggestions();
 }
 
+let _toastTimer = null;
 function showToast(msg){
   const t=document.getElementById('toast');
+  if(_toastTimer) clearTimeout(_toastTimer);
+  t.classList.remove('show');
+  void t.offsetWidth; // force reflow
   t.textContent=msg;
   t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),4000);
+  _toastTimer=setTimeout(()=>t.classList.remove('show'),4000);
 }
 
 function forceLogout(){
@@ -901,7 +905,7 @@ function loadData(){
     const json = snapshot.val();
     if(json){
       applyData(json);
-      showToast('✓ 資料載入成功');
+      setTimeout(()=>showToast('✓ 資料載入成功'), 300);
       console.log('✓ 資料從 Firebase 載入');
     } else {
       saveDataToFirebase(FALLBACK_DATA).then(()=>{
