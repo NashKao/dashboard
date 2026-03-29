@@ -949,7 +949,12 @@ function saveDataToFirebase(json){
 
 function applyData(json){
   GAMES = json.games || {};
-  CASINOS = json.casinos || [];
+  // Firebase 會把空 array 存成 null，需要還原
+  const rawCasinos = json.casinos || [];
+  CASINOS = (Array.isArray(rawCasinos) ? rawCasinos : Object.values(rawCasinos)).map(c=>({
+    ...c,
+    machines: Array.isArray(c.machines) ? c.machines : (c.machines ? Object.values(c.machines) : [])
+  }));
   // Convert string keys to number keys
   const rawTotal = json.casinoTotal || {};
   CASINO_TOTAL = {};
@@ -969,8 +974,8 @@ function applyData(json){
 // HELPERS
 // ═══════════════════════════════════════════════════════════
 function avgRev(machines){
-  if(!machines.length) return 0;
-  return Math.round(machines.reduce((s,m)=>s+m.rev,0)/machines.length);
+  if(!machines||!machines.length) return 0;
+  return Math.round(machines.reduce((s,m)=>s+(m.rev||0),0)/machines.length);
 }
 function perfClass(avg, base){
   if(!base) return 'critical';
