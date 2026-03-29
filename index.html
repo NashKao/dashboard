@@ -829,6 +829,12 @@ document.getElementById('versionDate').textContent = APP_DATE;
 document.getElementById('loginAppVersion').textContent = APP_VERSION;
 document.getElementById('loginVersionDate').textContent = APP_DATE;
 
+function nowDatetime(){
+  const d = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  return `${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
 function renderAll(){
   renderOverview();
   if(document.getElementById('view-coverage')?.classList.contains('active')) renderCoverage();
@@ -1720,7 +1726,7 @@ function renderCasinoSettings(){
       const totalEl=document.querySelector(`.casino-total-input[data-id="${id}"]`);
       if(avgEl) casino.casinoAvg=parseInt(avgEl.value)||casino.casinoAvg;
       if(totalEl) CASINO_TOTAL[id]=parseInt(totalEl.value)||0;
-      casino.lastUpdated = new Date().toLocaleDateString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit'}).replace(/\//g,'/');
+      casino.lastUpdated = nowDatetime();
       autoSave(`✓ ${casino.name} 設定已套用`);
       renderCasinoSettings();
       renderOverview();
@@ -1881,7 +1887,7 @@ document.getElementById('addGameBtn').addEventListener('click',()=>{
 
 
 async function saveToFirebase(){
-  const now = new Date().toISOString().slice(0,10);
+  const now = nowDatetime();
   const json = {
     meta:{ lastUpdated: now, updatedBy:'admin' },
     games: GAMES, casinoTotal: CASINO_TOTAL, casinos: CASINOS
