@@ -989,7 +989,7 @@ function perfLabel(cls){
   return cls==='great'?'🟢 優良':cls==='good'?'🔵 正常':cls==='low'?'🟡 偏低':'🔴 危險';
 }
 function fmtRev(n){ return (n||0).toLocaleString(); }
-function getUniqueGames(c){ return [...new Set(c.machines.map(m=>m.game))]; }
+function getUniqueGames(c){ return [...new Set((c.machines||[]).map(m=>m.game))]; }
 function formatDuration(dateStr){
   if(!dateStr) return '';
   const start = new Date(dateStr);
@@ -1012,10 +1012,10 @@ function setSort(val){ document.getElementById('sortBy').value=val; _sortBy=val;
 
 // ── KPI ──
 function updateKPIs(){
-  const total = CASINOS.reduce((s,c)=>s+c.machines.length,0);
+  const total = CASINOS.reduce((s,c)=>s+(c.machines||[]).length,0);
   const games = Object.keys(GAMES).length;
-  const low   = CASINOS.reduce((s,c)=>s+c.machines.filter(m=>perfClass(m.rev,c.casinoAvg)==='critical'||perfClass(m.rev,c.casinoAvg)==='low').length,0);
-  const repl  = CASINOS.reduce((s,c)=>s+c.machines.filter(m=>perfClass(m.rev,c.casinoAvg)==='critical').length,0);
+  const low   = CASINOS.reduce((s,c)=>s+(c.machines||[]).filter(m=>perfClass(m.rev,c.casinoAvg)==='critical'||perfClass(m.rev,c.casinoAvg)==='low').length,0);
+  const repl  = CASINOS.reduce((s,c)=>s+(c.machines||[]).filter(m=>perfClass(m.rev,c.casinoAvg)==='critical').length,0);
   document.getElementById('kpiCasinos').textContent  = CASINOS.length;
   document.getElementById('kpiMachines').textContent = total;
   document.getElementById('kpiGames').textContent    = games;
@@ -1120,7 +1120,7 @@ function renderOverview(){
           <button class="expand-btn" data-casino-id="${c.id}">▶</button>
         </div>
       </td>
-      <td><div class="machine-num">${c.machines.length}</div></td>
+      <td><div class="machine-num">${(c.machines||[]).length}</div></td>
       <td><div class="games-tags">${c.games.map(g=>gameTag(GAMES[g]?.name||g)).join('')}</div></td>
       <td>
         <div class="rev-bar-wrap">
@@ -1151,11 +1151,11 @@ function renderOverview(){
 
 function buildDetailHTML(c){
   const byGame={};
-  c.machines.forEach(m=>{
+  (c.machines||[]).forEach(m=>{
     if(!byGame[m.game]) byGame[m.game]=[];
     byGame[m.game].push(m);
   });
-  const maxPupd=Math.max(...c.machines.map(m=>m.rev),1);
+  const maxPupd=Math.max(...(c.machines||[]).map(m=>m.rev),1);
   const rows=Object.entries(byGame).map(([gid,ms])=>{
     const game=GAMES[gid];
     const avgPupd=Math.round(ms.reduce((s,m)=>s+m.rev,0)/ms.length);
@@ -1186,7 +1186,7 @@ function buildDetailHTML(c){
   return `<div class="detail-inner">
     <div class="detail-title">
       <span>${c.name} 機台明細 — 依遊戲分組</span>
-      <span style="font-weight:400;color:var(--text3)">基準 PUPD：${(casinoPupd||0).toLocaleString()} 元/台/日 · 共 ${c.machines.length} 台</span>
+      <span style="font-weight:400;color:var(--text3)">基準 PUPD：${(casinoPupd||0).toLocaleString()} 元/台/日 · 共 ${(c.machines||[]).length} 台</span>
     </div>
     <table class="detail-game-table">
       <thead><tr>
@@ -1221,8 +1221,8 @@ function renderMachineCoverage(){
   CASINOS.forEach(c=>{
     if(!regions[c.region]) regions[c.region]={casinos:[],ourTotal:0,casinoTotal:0};
     regions[c.region].casinos.push(c);
-    regions[c.region].ourTotal += c.machines.length;
-    regions[c.region].casinoTotal += (CASINO_TOTAL[c.id]||c.machines.length);
+    regions[c.region].ourTotal += (c.machines||[]).length;
+    regions[c.region].casinoTotal += (CASINO_TOTAL[c.id]||(c.machines||[]).length);
   });
 
   const allOur = Object.values(regions).reduce((s,r)=>s+r.ourTotal,0);
@@ -1249,13 +1249,13 @@ function renderMachineCoverage(){
     const blockId = `cov-region-${i}`;
 
     const casinoRows = r.casinos.map(c=>{
-      const total = CASINO_TOTAL[c.id]||c.machines.length;
-      const cp = Math.round(c.machines.length/total*100);
+      const total = CASINO_TOTAL[c.id]||(c.machines||[]).length;
+      const cp = Math.round((c.machines||[]).length/total*100);
       const cc = cp>=60?'var(--accent3)':cp>=40?'var(--accent)':cp>=25?'var(--warn)':'var(--danger)';
       return `
         <div class="cov-casino-row">
           <div class="cov-casino-name">${c.name}</div>
-          <div class="cov-casino-stats">${c.machines.length} / ${total} 台</div>
+          <div class="cov-casino-stats">${(c.machines||[]).length} / ${total} 台</div>
           <div class="cov-casino-bar-wrap">
             <div class="cov-casino-bar"><div class="cov-casino-fill" style="width:${cp}%;background:${cc}"></div></div>
             <span class="cov-casino-pct" style="color:${cc}">${cp}%</span>
@@ -1341,7 +1341,7 @@ function renderCoverage(){
   allGames.forEach(g => {
     matrix[g] = {};
     CASINOS.forEach(c => {
-      const ms = c.machines.filter(m => m.game === g);
+      const ms = (c.machines||[]).filter(m => m.game === g);
       if(ms.length === 0){ matrix[g][c.id] = null; return; } // 未安裝
       const hasData = ms.some(m => m.rev > 0);
       if(!hasData){ matrix[g][c.id] = {pupd:0, hasData:false, count:ms.length}; return; }
@@ -1425,7 +1425,7 @@ function renderSuggestions(){
   CASINOS.forEach((c,i)=>{
     // group machines by game
     const byGame = {};
-    c.machines.forEach(m=>{
+    (c.machines||[]).forEach(m=>{
       if(!byGame[m.game]) byGame[m.game]=[];
       byGame[m.game].push(m);
     });
@@ -1461,7 +1461,7 @@ function renderSuggestions(){
           <div class="sugg-region">${c.region}</div>
         </div>
         <div style="text-align:right">
-          <div class="sugg-machines">${c.machines.length}<span> 台</span></div>
+          <div class="sugg-machines">${(c.machines||[]).length}<span> 台</span></div>
           <div style="font-family:var(--mono);font-size:12px;color:var(--text3)">基準 ${fmtRev(c.casinoAvg)}</div>
         </div>
       </div>
@@ -1592,7 +1592,7 @@ function renderAdminOverview(){
   document.getElementById('adminOverviewList').innerHTML=CASINOS.map(c=>{
     const total=CASINO_TOTAL[c.id]||0;
     const byGame={};
-    c.machines.forEach(m=>{
+    (c.machines||[]).forEach(m=>{
       if(!byGame[m.game]) byGame[m.game]={count:0,revs:[],dates:[]};
       byGame[m.game].count++;
       if(m.rev>0) byGame[m.game].revs.push(m.rev);
@@ -1629,7 +1629,7 @@ function renderAdminOverview(){
         <div style="background:var(--surface2);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);">
           <span style="font-size:15px;font-weight:500;color:var(--text)">${c.name}</span>
           <div style="display:flex;align-items:center;gap:12px;">
-            <span style="font-family:var(--mono);font-size:11px;color:var(--text2);">${c.region} · 我方 ${c.machines.length} 台 / 總 ${total} 台 · 基準 ${c.casinoAvg.toLocaleString()}</span>
+            <span style="font-family:var(--mono);font-size:11px;color:var(--text2);">${c.region} · 我方 ${(c.machines||[]).length} 台 / 總 ${total} 台 · 基準 ${c.casinoAvg.toLocaleString()}</span>
             <button data-casino-id="${c.id}" class="overview-del-casino-btn"
               style="background:transparent;border:1px solid rgba(255,61,87,.4);color:var(--danger);padding:3px 8px;font-family:var(--mono);font-size:11px;cursor:pointer;">🗑 刪除賭場</button>
           </div>
@@ -1764,7 +1764,7 @@ function renderGameList(){
   if(!games.length){ el.innerHTML=`<div style="font-family:var(--mono);font-size:12px;color:var(--text3);padding:8px 0;">尚無遊戲</div>`; return; }
   el.innerHTML=games.map(g=>{
     const gc=gameColor(g);
-    const usedIn=CASINOS.filter(c=>c.machines.some(m=>m.game===g)).length;
+    const usedIn=CASINOS.filter(c=>(c.machines||[]).some(m=>m.game===g)).length;
     return `
       <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(31,47,74,.4);">
         <span style="width:10px;height:10px;border-radius:50%;background:${gc.color};flex-shrink:0;"></span>
@@ -1791,7 +1791,7 @@ function renderGameList(){
       delete GAMES[orig];
       _gameColorCache[newName]=_gameColorCache[orig];
       delete _gameColorCache[orig];
-      CASINOS.forEach(c=>c.machines.forEach(m=>{ if(m.game===orig) m.game=newName; }));
+      CASINOS.forEach(c=>(c.machines||[]).forEach(m=>{ if(m.game===orig) m.game=newName; }));
       populateAdminDropdowns(); renderGameList(); renderAll();
       autoSave(`✓ 已將「${orig}」改名為「${newName}」`);
       return;
@@ -1799,13 +1799,13 @@ function renderGameList(){
     const deleteBtn = e.target.closest('.game-delete-btn');
     if(deleteBtn){
       const g=deleteBtn.dataset.game;
-      const usedIn=CASINOS.filter(c=>c.machines.some(m=>m.game===g)).length;
-      const total=CASINOS.reduce((s,c)=>s+c.machines.filter(m=>m.game===g).length,0);
+      const usedIn=CASINOS.filter(c=>(c.machines||[]).some(m=>m.game===g)).length;
+      const total=CASINOS.reduce((s,c)=>s+(c.machines||[]).filter(m=>m.game===g).length,0);
       const msg=usedIn>0
         ?`「${g}」在 ${usedIn} 間賭場共 ${total} 台\n刪除遊戲會同時刪除這些機台，確定繼續？`
         :`確定刪除遊戲「${g}」？`;
       showConfirm(msg,()=>{
-        CASINOS.forEach(c=>{ c.machines=c.machines.filter(m=>m.game!==g); });
+        CASINOS.forEach(c=>{ c.machines=(c.machines||[]).filter(m=>m.game!==g); });
         delete GAMES[g]; delete _gameColorCache[g];
         populateAdminDropdowns(); renderGameList(); renderAll();
         autoSave(`✓ 已刪除遊戲 ${g}`);
