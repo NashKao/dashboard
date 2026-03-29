@@ -910,7 +910,9 @@ function loadData(){
 }
 
 function saveDataToFirebase(json){
-  return DATA_REF.set(json).then(()=>{
+  // 確保有 auth 再存
+  const doSave = () => DATA_REF.set(json).then(()=>{
+    showToast('✓ 資料已儲存至 Firebase');
     console.log('✓ 資料已寫入 Firebase');
     return true;
   }).catch(e=>{
@@ -918,6 +920,18 @@ function saveDataToFirebase(json){
     showToast('⚠ Firebase 儲存失敗：' + e.message);
     return false;
   });
+
+  const user = auth.currentUser;
+  if(user){
+    return doSave();
+  } else {
+    // 尚未登入，先登入再存
+    return firebaseSignIn().then(ok=>{
+      if(ok) return doSave();
+      showToast('⚠ Firebase 登入失敗，無法儲存');
+      return false;
+    });
+  }
 }
 
 function applyData(json){
