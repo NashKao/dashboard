@@ -1494,7 +1494,11 @@ function enterApp(asAdmin,remember){
     if(el) el.style.display=asAdmin?'':'none';
   });
   document.getElementById('logoutBtn').style.display='';
-  loadData();
+  if(asAdmin){
+    firebaseSignIn().then(()=>loadData());
+  } else {
+    loadData();
+  }
 }
 
 function submitPw(){
