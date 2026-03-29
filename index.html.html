@@ -460,22 +460,6 @@ input[type='date']::-webkit-calendar-picker-indicator{
 .chpw-err{font-family:var(--mono);font-size:12px;color:var(--danger);min-height:14px;margin-bottom:10px;}
 .chpw-actions{display:flex;gap:8px;justify-content:flex-end;}
 </style>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDJV4j3m2Ffvln8yeQ_JSw_30M5xi-l3Z0",
-      authDomain: "jumbo-dashboard-3916c.firebaseapp.com",
-      databaseURL: "https://jumbo-dashboard-3916c-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "jumbo-dashboard-3916c",
-      storageBucket: "jumbo-dashboard-3916c.firebasestorage.app",
-      messagingSenderId: "91968362292",
-      appId: "1:91968362292:web:7f12741355c1bde23bf761"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const DATA_REF = db.ref('data');
-  </script>
 </head>
 <body>
 
@@ -803,6 +787,24 @@ input[type='date']::-webkit-calendar-picker-indicator{
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDJV4j3m2Ffvln8yeQ_JSw_30M5xi-l3Z0",
+    authDomain: "jumbo-dashboard-3916c.firebaseapp.com",
+    databaseURL: "https://jumbo-dashboard-3916c-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "jumbo-dashboard-3916c",
+    storageBucket: "jumbo-dashboard-3916c.firebasestorage.app",
+    messagingSenderId: "91968362292",
+    appId: "1:91968362292:web:7f12741355c1bde23bf761"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db       = firebase.database();
+  const DATA_REF = db.ref('data');
+  const auth     = firebase.auth();
+</script>
 <script>
 // ═══════════════════════════════════════════════════════════
 // DATA — loaded from data.json via GitHub
@@ -813,7 +815,6 @@ let CASINOS = [];
 let CASINO_TOTAL = {};
 let _dataMeta = {};
 
-// Firebase 已在 <head> 初始化（db, DATA_REF）
 
 // ═══════════════════════════════════════════════════════════
 // GAME COLOR SYSTEM
@@ -859,8 +860,8 @@ document.addEventListener('click', e=>{
 });
 
 
-const APP_VERSION = 'v1.0.0';
-const APP_DATE    = '2026-03-20';
+const APP_VERSION = 'v1.1.0';
+const APP_DATE    = '2026-03-29';
 
 // Show version in header and login page
 document.getElementById('appVersion').textContent = APP_VERSION;
@@ -884,6 +885,7 @@ function showToast(msg){
 function forceLogout(){
   localStorage.removeItem('slt_auth_token');
   localStorage.removeItem('slt_auth_exp');
+  firebaseSignOut();
   location.reload();
 }
 
@@ -897,6 +899,26 @@ function showConfirm(msg, onYes){
   const close = ()=>{ overlay.style.display='none'; yes.onclick=null; no.onclick=null; };
   yes.onclick = ()=>{ close(); onYes(); };
   no.onclick  = ()=>{ close(); };
+}
+
+
+// ── Firebase Auth ──
+const FIREBASE_EMAIL = 'nash131119@gmail.com';
+const FIREBASE_PASS  = 'jumbo@admin';
+
+async function firebaseSignIn(){
+  try {
+    await auth.signInWithEmailAndPassword(FIREBASE_EMAIL, FIREBASE_PASS);
+    console.log('✓ Firebase Auth 登入成功');
+    return true;
+  } catch(e) {
+    console.warn('Firebase Auth 登入失敗:', e.message);
+    return false;
+  }
+}
+
+async function firebaseSignOut(){
+  try { await auth.signOut(); } catch(e) {}
 }
 
 // ── Firebase Data Functions ──
